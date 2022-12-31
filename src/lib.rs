@@ -25,11 +25,14 @@
 //! To name the type of such list, we can write
 //! `hlist_type!(i32, f64, bool)` instead of `Cons<i32, Cons<f64, Cons<bool, Nil>>>`.
 //!
-//! This crate uses no unsafe code to provide the same safety guarantees provided by Rust programming language.
+//! This crate uses **no unsafe code** to provide the same safety guarantees provided by Rust programming language.
+//!
+//! This crate is `no_std`, so it cane be used freely and with no fear in embedded environment.
 
 #![warn(clippy::all)]
 #![warn(missing_docs)]
 #![forbid(unsafe_code)]
+#![no_std]
 
 /// An empty heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
@@ -60,6 +63,30 @@ mod sealed {
 }
 
 /// Macro creating heterogenous list values from list of expressions.
+///
+/// This macro supports trailing comma at the end of list of expressions.
+///
+/// # Examples
+///
+/// This macro can be used to create heterogenous lists
+/// as easily as tuples without cons-nil boilerplate:
+///
+/// ```
+/// use hlist2::{hlist, Cons, Nil};
+///
+/// let list = hlist!(1, 2.0, true,);
+/// assert_eq!(list, Cons(1, Cons(2.0, Cons(true, Nil))));
+/// ```
+///
+/// Also it can be used in pattern matching.
+/// For example, we can destruct heterogenous lists to its values:
+///
+/// ```
+/// use hlist2::hlist;
+///
+/// let hlist!(a, b, c, d,) = hlist!(10, -15.0, "hello world", false);
+/// assert_eq!((a, b, c, d), (10, -15.0, "hello world", false));
+/// ```
 #[macro_export]
 macro_rules! hlist {
     () => {
@@ -67,14 +94,14 @@ macro_rules! hlist {
     };
     // handling simple identifiers, limited patterns support
     ($head:ident $(,)?) => {
-        $crate::Cons($head, Nil)
+        $crate::Cons($head, $crate::hlist!())
     };
     ($head:ident, $($tail:ident),* $(,)?) => {
         $crate::Cons($head, $crate::hlist!($($tail),*))
     };
     // handling complex expressions
     ($head:expr $(,)?) => {
-        $crate::Cons($head, $crate::Nil)
+        $crate::Cons($head, $crate::hlist!())
     };
     ($head:expr, $($tail:expr),* $(,)?) => {
         $crate::Cons($head, $crate::hlist!($($tail),*))
@@ -82,13 +109,27 @@ macro_rules! hlist {
 }
 
 /// Macro creating heterogenous list types from list of element types.
+///
+/// This macro supports trailing comma at the end of list of element types.
+///
+/// # Examples
+///
+/// This macro can be used to name heterogenous list type
+/// as easily as tuple type without cons-nil boilerplate:
+///
+/// ```
+/// use hlist2::{hlist, hlist_type, Cons, Nil};
+///
+/// let list: hlist_type!(i32, f64, bool) = hlist!(1, 2.0, true,);
+/// let list: Cons<i32, Cons<f64, Cons<bool, Nil>>> = list;
+/// ```
 #[macro_export]
 macro_rules! hlist_type {
     () => {
         $crate::Nil
     };
     ($head:ty $(,)?) => {
-        $crate::Cons<$head, $crate::Nil>
+        $crate::Cons<$head, $crate::hlist_type!()>
     };
     ($head:ty, $($tail:ty),* $(,)?) => {
         $crate::Cons<$head, $crate::hlist_type!($($tail),*)>
