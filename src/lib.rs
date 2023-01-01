@@ -84,7 +84,7 @@ mod sealed {
 /// ```
 /// use hlist2::{hlist, Cons, Nil};
 ///
-/// let list = hlist!(1, 2.0, true,);
+/// let list = hlist!(1, 2.0, true);
 /// assert_eq!(list, Cons(1, Cons(2.0, Cons(true, Nil))));
 /// ```
 ///
@@ -94,7 +94,7 @@ mod sealed {
 /// ```
 /// use hlist2::hlist;
 ///
-/// let hlist!(a, b, c, d,) = hlist!(10, -15.0, "hello world", false);
+/// let hlist!(a, b, c, d) = hlist!(10, -15.0, "hello world", false);
 /// assert_eq!((a, b, c, d), (10, -15.0, "hello world", false));
 /// ```
 #[macro_export]
@@ -130,7 +130,7 @@ macro_rules! hlist {
 /// ```
 /// use hlist2::{hlist, HList, Cons, Nil};
 ///
-/// let list: HList!(i32, f64, bool) = hlist!(1, 2.0, true,);
+/// let list: HList!(i32, f64, bool) = hlist!(1, 2.0, true);
 /// let list: Cons<i32, Cons<f64, Cons<bool, Nil>>> = list;
 /// ```
 #[macro_export]
