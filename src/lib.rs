@@ -11,7 +11,7 @@
 //! Such recursive nature of heterogenous list defined by this crate allows us to implement various traits recursively
 //! and without any restrictions on the size of such list or types contained in it.
 //! Unlike tuples, traits can be implemented for all heterogenous lists
-//! and even for those which count of elements is bigger than 12, whish can be a problem sometimes.
+//! and even for those which count of elements is bigger than 12, lack of which for tuples is a problem sometimes.
 //!
 //! All heterogenous lists implement [`trait@HList`] trait, so it can be used in generics.
 //! For example, this can be useful to bound generic type to be heterogenous list.
@@ -41,6 +41,8 @@
 #![warn(missing_docs)]
 #![forbid(unsafe_code)]
 #![no_std]
+
+pub mod ops;
 
 /// An empty heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
@@ -76,8 +78,8 @@ mod sealed {
 ///
 /// # Examples
 ///
-/// This macro can be used to create heterogenous lists
-/// as easily as tuples without cons-nil boilerplate:
+/// This macro can be used to create heterogenous list
+/// as easily as tuple without cons-nil boilerplate:
 ///
 /// ```
 /// use hlist2::{hlist, Cons, Nil};
@@ -87,7 +89,7 @@ mod sealed {
 /// ```
 ///
 /// Also it can be used in pattern matching.
-/// For example, we can destruct heterogenous lists to its values:
+/// For example, we can destruct heterogenous list to its values:
 ///
 /// ```
 /// use hlist2::hlist;
