@@ -16,6 +16,59 @@
 //! let tuple: (_, _, _, _) = list.into();
 //! assert_eq!(tuple, (1, 2.0, true, "hello world"));
 //! ```
+//!
+//! Also this module defines 2 new traits, [`IntoTuple`] and [`IntoHList`]
+//! to convert heterogenous list into tuple and vise versa using associated types instead of generics.
+//!
+//! For example, it is easily to convert heterogenous list into tuple
+//! with [`into_tuple`][IntoTuple::into_tuple()] method instead of the previous example,
+//! as there is no need to explicitly provide tuple type:
+//!
+//! ```
+//! use hlist2::{hlist, tuple::IntoTuple};
+//!
+//! let list = hlist!(1, 2.0, true, "hello world");
+//! let tuple = list.into_tuple();
+//! assert_eq!(tuple, (1, 2.0, true, "hello world"));
+//! ```
+
+use crate::HList;
+
+/// Convert the heterogenous list into tuple.
+pub trait IntoTuple {
+    /// Type of tuple the heterogenous list will be converted to.
+    type Output;
+
+    /// Converts the heterogenous list into tuple.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{hlist, tuple::IntoTuple};
+    ///
+    /// let list = hlist!(1, 2.0, true, "hello world");
+    /// assert_eq!(list.into_tuple(), (1, 2.0, true, "hello world"));
+    /// ```
+    fn into_tuple(self) -> Self::Output;
+}
+
+/// Convert the tuple into heterogenous list.
+pub trait IntoHList {
+    /// Type of heterogenous list the tuple will be converted to.
+    type Output: HList;
+
+    /// Converts the tuple into heterogenous list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{hlist, tuple::IntoHList};
+    ///
+    /// let tuple = (1, 2.0, true, "hello world");
+    /// assert_eq!(tuple.into_hlist(), hlist!(1, 2.0, true, "hello world"));
+    /// ```
+    fn into_hlist(self) -> Self::Output;
+}
 
 macro_rules! hlist_from_tuple {
     ($($types:ident),*) => {
@@ -24,6 +77,14 @@ macro_rules! hlist_from_tuple {
             fn from(value: ($($types,)*)) -> Self {
                 let ($($types,)*) = value;
                 $crate::hlist!($($types,)*)
+            }
+        }
+
+        impl<$($types),*> IntoTuple for $crate::HList!($($types,)*) {
+            type Output = ($($types,)*);
+
+            fn into_tuple(self) -> Self::Output {
+                self.into()
             }
         }
     };
@@ -51,6 +112,14 @@ macro_rules! tuple_from_hlist {
             fn from(value: $crate::HList!($($types,)*)) -> Self {
                 let $crate::hlist!($($types,)*) = value;
                 ($($types,)*)
+            }
+        }
+
+        impl<$($types),*> IntoHList for ($($types,)*) {
+            type Output = $crate::HList!($($types,)*);
+
+            fn into_hlist(self) -> Self::Output {
+                self.into()
             }
         }
     };
