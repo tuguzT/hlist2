@@ -58,11 +58,62 @@ where
 ///
 /// This trait is sealed and cannot be implemented outside of this crate.
 /// It is implemented only for [`Cons`] and [`Nil`] structs.
-pub trait HList: sealed::Sealed {}
+pub trait HList: sealed::Sealed {
+    /// Length (count of elements) of the heterogenous list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::HList;
+    ///
+    /// assert_eq!(<HList!()>::LEN, 0);
+    /// assert_eq!(<HList!(i32)>::LEN, 1);
+    /// assert_eq!(<HList!(i32, f64, bool, &str)>::LEN, 4);
+    /// ```
+    const LEN: usize;
 
-impl HList for Nil {}
+    /// Returns the length (count of elements) of the heterogenous list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{hlist, HList};
+    ///
+    /// assert_eq!(hlist!().len(), 0);
+    /// assert_eq!(hlist!(1).len(), 1);
+    /// assert_eq!(hlist!(1, 2.0, true, "hello world").len(), 4);
+    /// ```
+    fn len(&self) -> usize {
+        Self::LEN
+    }
 
-impl<Head, Tail> HList for Cons<Head, Tail> where Tail: HList {}
+    /// Checks if the heterogenous list is empty.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use core::ops::Not;
+    ///
+    /// use hlist2::{hlist, HList};
+    ///
+    /// assert!(hlist!().is_empty());
+    /// assert!(hlist!(1, 2.0, true).is_empty().not());
+    /// ```
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}
+
+impl HList for Nil {
+    const LEN: usize = 0;
+}
+
+impl<Head, Tail> HList for Cons<Head, Tail>
+where
+    Tail: HList,
+{
+    const LEN: usize = Tail::LEN + 1;
+}
 
 mod sealed {
     pub trait Sealed {}
