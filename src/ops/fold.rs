@@ -7,6 +7,9 @@ pub trait Fold<Accumulator, Folder>: HList {
     ///
     /// This left folds the heterogenous list from its beginning to the end,
     /// or combines elements in a *left-associative* fashion.
+    /// For a *right-associative* version of `fold()`, see [`RFold::rfold()`][rfold].
+    ///
+    /// [rfold]: crate::ops::RFold::rfold()
     ///
     /// # Examples
     ///
