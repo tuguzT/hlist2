@@ -1,23 +1,23 @@
 use crate::{Cons, HList};
 
 /// Prepend new element to the heterogenous list.
-///
-/// New element will be placed at the beginning of the heterogenous list,
-/// resulting in new heterogenous list.
-///
-/// # Examples
-///
-/// ```
-/// use hlist2::{hlist, ops::Prepend};
-///
-/// let hlist = hlist!(2.0, true, "hello world");
-/// assert_eq!(hlist.prepend(1), hlist!(1, 2.0, true, "hello world"));
-/// ```
 pub trait Prepend: HList {
     /// Type of heterogenous list with new element.
     type Output<T>: HList;
 
     /// Prepends new element to the heterogenous list.
+    ///
+    /// New element will be placed at the beginning of the heterogenous list,
+    /// resulting in new heterogenous list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{hlist, ops::Prepend};
+    ///
+    /// let hlist = hlist!(2.0, true, "hello world");
+    /// assert_eq!(hlist.prepend(1), hlist!(1, 2.0, true, "hello world"));
+    /// ```
     fn prepend<T>(self, value: T) -> Self::Output<T>;
 }
 

@@ -1,23 +1,23 @@
 use crate::{Cons, HList, Nil};
 
 /// Append new element to the heterogenous list.
-///
-/// New element will be placed at the end of the heterogenous list,
-/// resulting in new heterogenous list.
-///
-/// # Examples
-///
-/// ```
-/// use hlist2::{hlist, ops::Append};
-///
-/// let hlist = hlist!(1, 2.0, true);
-/// assert_eq!(hlist.append("hello world"), hlist!(1, 2.0, true, "hello world"));
-/// ```
 pub trait Append: HList {
     /// Type of heterogenous list with new element.
     type Output<T>: HList;
 
     /// Appends new element to the heterogenous list.
+    ///
+    /// New element will be placed at the end of the heterogenous list,
+    /// resulting in new heterogenous list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{hlist, ops::Append};
+    ///
+    /// let hlist = hlist!(1, 2.0, true);
+    /// assert_eq!(hlist.append("hello world"), hlist!(1, 2.0, true, "hello world"));
+    /// ```
     fn append<T>(self, value: T) -> Self::Output<T>;
 }
 

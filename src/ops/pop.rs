@@ -3,25 +3,25 @@ use crate::{Cons, HList, Nil};
 use super::{Pair, Prepend};
 
 /// Remove the last element from the heterogenous list.
-///
-/// New element will be removed at the end of the heterogenous list,
-/// resulting in pair of new heterogenous list and removed element.
-///
-/// # Examples
-///
-/// ```
-/// use hlist2::{hlist, ops::Pop};
-///
-/// let hlist = hlist!(1, 2.0, true);
-/// let (hlist, elem) = hlist.pop();
-/// assert_eq!(hlist, hlist!(1, 2.0));
-/// assert_eq!(elem, true);
-/// ```
 pub trait Pop: HList {
     /// Pair of new heterogenous list after removing the last element and removed element.
     type Output: Pair;
 
     /// Removes the last element from the heterogenous list.
+    ///
+    /// New element will be removed at the end of the heterogenous list,
+    /// resulting in pair of new heterogenous list and removed element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{hlist, ops::Pop};
+    ///
+    /// let hlist = hlist!(1, 2.0, true);
+    /// let (hlist, elem) = hlist.pop();
+    /// assert_eq!(hlist, hlist!(1, 2.0));
+    /// assert_eq!(elem, true);
+    /// ```
     fn pop(self) -> Self::Output;
 }
 
