@@ -17,9 +17,9 @@ pub trait PopFront {
     /// ```
     /// use hlist2::{hlist, ops::PopFront};
     ///
-    /// let hlist = hlist!(1, 2.0, true);
-    /// let (hlist, elem) = hlist.pop_front();
-    /// assert_eq!(hlist, hlist!(2.0, true));
+    /// let list = hlist!(1, 2.0, true);
+    /// let (list, elem) = list.pop_front();
+    /// assert_eq!(list, hlist!(2.0, true));
     /// assert_eq!(elem, 1);
     /// ```
     fn pop_front(self) -> Self::Output;

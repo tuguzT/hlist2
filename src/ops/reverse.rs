@@ -15,8 +15,8 @@ pub trait Reverse: HList {
     /// ```
     /// use hlist2::{hlist, ops::Reverse};
     ///
-    /// let hlist = hlist!(1, 2.0, true, "hello world");
-    /// assert_eq!(hlist.reverse(), hlist!("hello world", true, 2.0, 1));
+    /// let list = hlist!(1, 2.0, true, "hello world");
+    /// assert_eq!(list.reverse(), hlist!("hello world", true, 2.0, 1));
     /// ```
     fn reverse(self) -> Self::Output;
 }
