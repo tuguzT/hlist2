@@ -1,9 +1,11 @@
 use crate::{Cons, HList};
 
+use super::Pair;
+
 /// Remove the first element from the heterogenous list.
 ///
 /// New element will be removed from the beginning of the heterogenous list,
-/// resulting in tuple of new heterogenous list and removed element.
+/// resulting in pair of new heterogenous list and removed element.
 ///
 /// # Examples
 ///
@@ -16,8 +18,8 @@ use crate::{Cons, HList};
 /// assert_eq!(elem, 1);
 /// ```
 pub trait PopFront {
-    /// Tuple of new heterogenous list after removing the first element and removed element.
-    type Output;
+    /// Pair of new heterogenous list after removing the first element and removed element.
+    type Output: Pair;
 
     /// Removes the first element from the heterogenous list.
     fn pop_front(self) -> Self::Output;
