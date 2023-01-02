@@ -1,25 +1,41 @@
 //! This crate defines a way to create compile-time heterogenous lists,
 //! or lists consisting of multiple types.
 //!
-//! This is done by defining types for empty list, [`Nil`],
+//! # Heterogenous lists
+//!
+//! This crate defines types for an empty list, [`Nil`],
 //! and for pair of list head and its remainder, [`Cons`].
 //! Heterogenous list consists of many conses contained recursively one in another,
 //! and the last cons with the last element contains nil as the remainder.
+//!
 //! For example, heterogenous list of integer, double and bool can be represented as
 //! `Cons(1, Cons(2.0, Cons(true, Nil)))` with type of `Cons<i32, Cons<f64, Cons<bool, Nil>>>`.
 //!
-//! Such recursive nature of heterogenous list defined by this crate allows us to implement various traits recursively
+//! # Recursive nature and behavior
+//!
+//! Such recursive nature of heterogenous list allows us to implement various traits recursively
 //! and without any restrictions on the size of such list or types contained in it.
-//! Unlike tuples, traits can be implemented for all heterogenous lists
+//! Unlike [tuples](prim@tuple), traits can be implemented for all heterogenous lists
 //! and even for those which count of elements is bigger than 12, lack of which for tuples is a problem sometimes.
 //!
-//! All heterogenous lists implement [`trait@HList`] trait, so it can be used in generics.
+//! All heterogenous lists implement [`HList`][hlist] trait, so it can be used in generics.
 //! For example, this can be useful to bound generic type to be heterogenous list.
 //!
 //! To implement your trait for all heterogenous lists of any size,
-//! first implement it on [`Nil`] type, which is [`trait@HList`] too.
+//! first implement it on [`Nil`] type, which is [`HList`][hlist] too.
 //! Then, implement your trait on [`Cons`] struct with head and tail generic types
-//! where tail type is heterogenous list too (or which implement [`trait@HList`] trait).
+//! where tail type is heterogenous list too (or which implement [`HList`][hlist] trait).
+//!
+//! Examples of these technique can be viewed in [`ops`](crate::ops) module, where
+//! all the specific operations for all heterogenous list types are implemented.
+//! For example, to append any value to the end of the list, use [`Append`][append] trait;
+//! to prepend any value to the beginning of the list, use [`Prepend`][prepend] trait, and so on.
+//!
+//! [hlist]: trait@crate::HList
+//! [append]: crate::ops::Append
+//! [prepend]: crate::ops::Prepend
+//!
+//! # Constructing and destructing heterogenous lists
 //!
 //! But such recursive nature can be a problem when we try to name the type of heterogenous list
 //! or use pattern matching with values of heterogenous lists.
@@ -30,10 +46,21 @@
 //!
 //! So instead of writing `Cons(1, Cons(2.0, Cons(true, Nil)))`
 //! we can write more readable and tuple-like expression like `hlist!(1, 2.0, true)`.
+//!
 //! To name the type of such list, we can write `HList!(i32, f64, bool)`
 //! instead of `Cons<i32, Cons<f64, Cons<bool, Nil>>>`.
 //!
-//! This crate uses **no unsafe code** to provide the same safety guarantees provided by Rust programming language.
+//! # Tuple compatibility
+//!
+//! Also this crate has a compatibility with [tuples](prim@tuple)
+//! which is defined in [`tuple`](crate::tuple) module.
+//! It implements conversion between heterogenous lists and their tuple forms
+//! when tuple has length of 12 and less, and vise versa.
+//!
+//! # Features
+//!
+//! This crate uses **no unsafe code** to provide the same
+//! safety guarantees the Rust programming language provides.
 //!
 //! This crate is `no_std`, so it can be used freely and with no fear in embedded environment.
 
@@ -43,6 +70,7 @@
 #![no_std]
 
 pub mod ops;
+pub mod tuple;
 
 /// An empty heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
@@ -106,6 +134,10 @@ pub trait HList: sealed::Sealed {
 
 impl HList for Nil {
     const LEN: usize = 0;
+
+    fn is_empty(&self) -> bool {
+        true
+    }
 }
 
 impl<Head, Tail> HList for Cons<Head, Tail>
