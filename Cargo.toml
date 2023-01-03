@@ -2,6 +2,7 @@
 name = "hlist2"
 version = "0.0.0"
 edition = "2021"
+description = "Compile-time heterogeneous list implementation"
 authors = ["tuguzT <timurka.tugushev@gmail.com>"]
 repository = "https://github.com/tuguzT/hlist2"
 license = "MIT OR Apache-2.0"
