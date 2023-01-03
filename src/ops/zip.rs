@@ -10,7 +10,7 @@ where
 
     /// Merges, or 'zips up' two heterogenous lists into a single heterogenous list of pairs.
     ///
-    /// Returns a new heterogenous list where the first element comes from the first list,
+    /// It returns a new heterogenous list where the first element comes from the first list,
     /// and the second element comes from the second list.
     ///
     /// In other words, it zips two lists together, into a single one.
@@ -20,11 +20,11 @@ where
     /// ```
     /// use hlist2::{hlist, ops::Zip};
     ///
-    /// let first = hlist!(1, 2, 3);
-    /// let second = hlist!(4, 5, 6);
+    /// let first = hlist![1, 2, 3];
+    /// let second = hlist![4, 5, 6];
     ///
     /// let zipped = first.zip(second);
-    /// assert_eq!(zipped, hlist!((1, 4), (2, 5), (3, 6)));
+    /// assert_eq!(zipped, hlist![(1, 4), (2, 5), (3, 6)]);
     /// ```
     fn zip(self, other: Other) -> Self::Output;
 }
