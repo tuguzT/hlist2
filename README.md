@@ -62,8 +62,8 @@ This crate is `no_std`, so it can be used freely and with no fear in embedded en
 
 ## Inspirations
 
-This crate is intended to be an alternative to unmaintained [`hlist`](https://github.com/Sgeo/hlist) crate.
-This is also inspired by another open source crate [`frunk`](https://github.com/lloydmeta/frunk).
+This crate is intended to be an alternative to unmaintained [hlist](https://github.com/Sgeo/hlist) crate.
+This is also inspired by another open source crate [frunk](https://github.com/lloydmeta/frunk).
 
 ## License
 
