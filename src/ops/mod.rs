@@ -1,8 +1,8 @@
 //! Provides operations defined for heterogenous lists.
 
 pub use self::{
-    append::Append, extend::Extend, fold::Fold, pop::Pop, pop_front::PopFront, prepend::Prepend,
-    reverse::Reverse, rfold::RFold, to_mut::ToMut, to_ref::ToRef,
+    append::Append, extend::Extend, fold::Fold, map::Map, pop::Pop, pop_front::PopFront,
+    prepend::Prepend, reverse::Reverse, rfold::RFold, to_mut::ToMut, to_ref::ToRef,
 };
 
 use self::pair::Pair;
@@ -10,6 +10,7 @@ use self::pair::Pair;
 mod append;
 mod extend;
 mod fold;
+mod map;
 mod pair;
 mod pop;
 mod pop_front;
