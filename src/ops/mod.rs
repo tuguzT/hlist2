@@ -2,7 +2,7 @@
 
 pub use self::{
     append::Append, extend::Extend, fold::Fold, pop::Pop, pop_front::PopFront, prepend::Prepend,
-    reverse::Reverse, rfold::RFold,
+    reverse::Reverse, rfold::RFold, to_mut::ToMut, to_ref::ToRef,
 };
 
 use self::pair::Pair;
@@ -16,3 +16,5 @@ mod pop_front;
 mod prepend;
 mod reverse;
 mod rfold;
+mod to_mut;
+mod to_ref;
