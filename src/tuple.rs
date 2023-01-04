@@ -70,6 +70,17 @@ pub trait IntoHList {
     fn into_hlist(self) -> Self::Output;
 }
 
+impl<L> IntoHList for L
+where
+    L: HList,
+{
+    type Output = Self;
+
+    fn into_hlist(self) -> Self::Output {
+        self
+    }
+}
+
 macro_rules! hlist_from_tuple {
     ($($types:ident),*) => {
         impl<$($types),*> From<($($types,)*)> for $crate::HList!($($types,)*) {
@@ -85,6 +96,14 @@ macro_rules! hlist_from_tuple {
 
             fn into_tuple(self) -> Self::Output {
                 self.into()
+            }
+        }
+
+        impl<$($types),*> IntoTuple for ($($types,)*) {
+            type Output = Self;
+
+            fn into_tuple(self) -> Self::Output {
+                self
             }
         }
     };
