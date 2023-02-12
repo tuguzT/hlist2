@@ -32,8 +32,10 @@ pub trait Get<T, I>: HList {
     fn get_mut(&mut self) -> &mut T;
 }
 
+#[doc(hidden)]
 pub struct Here(());
 
+#[doc(hidden)]
 pub struct There<T>(PhantomData<T>);
 
 impl<Head, Tail> Get<Head, Here> for Cons<Head, Tail>
