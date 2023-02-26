@@ -52,8 +52,7 @@
 //!
 //! # Tuple compatibility
 //!
-//! Also this crate has a compatibility with [tuples](prim@tuple)
-//! which is defined in [`tuple`](crate::tuple) module.
+//! Also this crate has a compatibility with [tuple](prim@tuple) types.
 //! It implements conversion between heterogenous lists and their tuple forms
 //! when tuple has length of 12 and less, and vise versa.
 //!
@@ -69,8 +68,8 @@
 #![forbid(unsafe_code)]
 #![no_std]
 
+pub mod convert;
 pub mod ops;
-pub mod tuple;
 
 /// An empty heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
