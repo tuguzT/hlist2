@@ -32,12 +32,29 @@ pub trait Get<T, I>: HList {
     fn get_mut(&mut self) -> &mut T;
 }
 
-#[doc(hidden)]
-pub struct Here(());
+/// Make sure that [`Here`] and [`There`] indices cannot be constructed.
+enum Never {}
 
-#[doc(hidden)]
-pub struct There<T>(PhantomData<T>);
+/// Used as an index into an [`trait@HList`] which points to the head of the heterogenous list.
+///
+/// This type of index exists due to lack of specialization in Rust.
+/// This allows multiple implementations of [`Get`] trait based on knowledge
+/// where the actual type is located: in the head or somewhere in the tail of the list.
+pub struct Here {
+    _never: Never,
+}
 
+/// Used as an index into an [`trait@HList`] which points to the tail of the heterogenous list.
+///
+/// This type of index exists due to lack of specialization in Rust.
+/// This allows multiple implementations of [`Get`] trait based on knowledge
+/// where the actual type is located: in the head or somewhere in the tail of the list.
+pub struct There<T> {
+    _marker: PhantomData<fn() -> T>,
+    _never: Never,
+}
+
+/// Desired type is located in the head of the heterogenous list.
 impl<Head, Tail> Get<Head, Here> for Cons<Head, Tail>
 where
     Tail: HList,
@@ -53,6 +70,7 @@ where
     }
 }
 
+/// Desired type is located somewhere in the tail of the heterogenous list.
 impl<Head, Tail, FromTail, TailIndex> Get<FromTail, There<TailIndex>> for Cons<Head, Tail>
 where
     Tail: Get<FromTail, TailIndex>,
