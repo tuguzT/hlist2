@@ -50,7 +50,7 @@ instead of `Cons<i32, Cons<f64, Cons<bool, Nil>>>`.
 
 ## Tuple compatibility
 
-Also this crate has a compatibility with tuples which is defined in `tuple` module.
+Also this crate has a compatibility with tuple types.
 It implements conversion between heterogenous lists and their tuple forms
 when tuple has length of 12 and less, and vise versa.
 
