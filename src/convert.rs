@@ -1,7 +1,7 @@
 //! Traits for conversion from and into heterogenous list types.
 //!
-//! This trait can be implemented for any struct, because any struct
-//! can be represented as a heterogenous list of its fields.
+//! Traits defined in this module can be implemented for any struct,
+//! because any struct can be represented as a heterogenous list of its fields.
 
 use crate::HList;
 
