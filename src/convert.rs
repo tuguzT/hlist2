@@ -89,7 +89,8 @@ pub trait IntoHList {
     /// use hlist2::{hlist, convert::IntoHList};
     ///
     /// let tuple = (1, 2.0, true, "hello world");
-    /// assert_eq!(tuple.into_hlist(), hlist!(1, 2.0, true, "hello world"));
+    /// let list = tuple.into_hlist();
+    /// assert_eq!(list, hlist!(1, 2.0, true, "hello world"));
     /// ```
     fn into_hlist(self) -> Self::HList;
 }
