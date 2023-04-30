@@ -77,9 +77,7 @@ pub struct Nil;
 
 /// Heterogenous list with head and tail values, where tail is another heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
-pub struct Cons<Head, Tail>(pub Head, pub Tail)
-where
-    Tail: HList;
+pub struct Cons<Head, Tail>(pub Head, pub Tail);
 
 /// Compile-time heterogenous list.
 ///
@@ -149,9 +147,9 @@ where
 mod sealed {
     pub trait Sealed {}
 
-    impl Sealed for super::Nil {}
+    impl Sealed for crate::Nil {}
 
-    impl<Head, Tail> Sealed for super::Cons<Head, Tail> where Tail: super::HList {}
+    impl<Head, Tail> Sealed for crate::Cons<Head, Tail> {}
 }
 
 /// Macro creating heterogenous list values from list of expressions.

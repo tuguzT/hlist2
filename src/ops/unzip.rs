@@ -51,8 +51,11 @@ where
 
     fn unzip(self) -> (Self::First, Self::Second) {
         let Cons(head, tail) = self;
-        let (tail_first, tail_second) = tail.unzip();
         let (head_first, head_second) = head.destruct();
-        (Cons(head_first, tail_first), Cons(head_second, tail_second))
+        let (tail_first, tail_second) = tail.unzip();
+
+        let first = Cons(head_first, tail_first);
+        let second = Cons(head_second, tail_second);
+        (first, second)
     }
 }

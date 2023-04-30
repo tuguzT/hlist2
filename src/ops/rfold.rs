@@ -45,7 +45,7 @@ pub trait RFold<Accumulator, Folder>: HList {
     /// );
     /// assert_eq!(folded, 9001.0);
     /// ```
-    fn rfold(self, init: Accumulator, f: Folder) -> Accumulator;
+    fn rfold(self, init: Accumulator, folder: Folder) -> Accumulator;
 }
 
 impl<A, F> RFold<A, F> for Nil {
@@ -59,23 +59,22 @@ where
     F: FnMut(A, Head) -> A,
     Tail: for<'a> RFold<A, &'a mut F>,
 {
-    fn rfold(self, init: A, mut f: F) -> A {
+    fn rfold(self, init: A, mut folder: F) -> A {
         let Cons(head, tail) = self;
-        let init = tail.rfold(init, &mut f);
-        f(init, head)
+        let init = tail.rfold(init, &mut folder);
+        folder(init, head)
     }
 }
 
 impl<A, FHead, FTail, Head, Tail> RFold<A, Cons<FHead, FTail>> for Cons<Head, Tail>
 where
     FHead: FnOnce(A, Head) -> A,
-    FTail: HList,
     Tail: RFold<A, FTail>,
 {
-    fn rfold(self, init: A, f: Cons<FHead, FTail>) -> A {
+    fn rfold(self, init: A, folder: Cons<FHead, FTail>) -> A {
         let Cons(head, tail) = self;
-        let Cons(f_head, f_tail) = f;
-        let init = tail.rfold(init, f_tail);
-        f_head(init, head)
+        let Cons(folder_head, folder_tail) = folder;
+        let init = tail.rfold(init, folder_tail);
+        folder_head(init, head)
     }
 }

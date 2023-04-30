@@ -28,7 +28,9 @@ pub trait Extend: HList {
 }
 
 impl Extend for Nil {
-    type Output<T> = T where T: HList;
+    type Output<T> = T
+    where
+        T: HList;
 
     fn extend<T>(self, list: T) -> Self::Output<T>
     where
@@ -42,13 +44,16 @@ impl<Head, Tail> Extend for Cons<Head, Tail>
 where
     Tail: Extend,
 {
-    type Output<T> = Cons<Head, Tail::Output<T>> where T: HList;
+    type Output<T> = Cons<Head, Tail::Output<T>>
+    where
+        T: HList;
 
     fn extend<T>(self, list: T) -> Self::Output<T>
     where
         T: HList,
     {
         let Cons(head, tail) = self;
-        Cons(head, tail.extend(list))
+        let tail = tail.extend(list);
+        Cons(head, tail)
     }
 }

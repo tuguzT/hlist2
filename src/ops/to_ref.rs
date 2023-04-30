@@ -43,6 +43,7 @@ where
 
     fn to_ref(&self) -> Self::Output<'_> {
         let Cons(head, tail) = self;
-        Cons(head, tail.to_ref())
+        let tail = tail.to_ref();
+        Cons(head, tail)
     }
 }

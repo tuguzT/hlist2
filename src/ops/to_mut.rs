@@ -43,6 +43,7 @@ where
 
     fn to_mut(&mut self) -> Self::Output<'_> {
         let Cons(head, tail) = self;
-        Cons(head, tail.to_mut())
+        let tail = tail.to_mut();
+        Cons(head, tail)
     }
 }

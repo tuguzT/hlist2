@@ -37,6 +37,7 @@ where
 
     fn append<T>(self, value: T) -> Self::Output<T> {
         let Cons(head, tail) = self;
-        Cons(head, tail.append(value))
+        let tail = tail.append(value);
+        Cons(head, tail)
     }
 }

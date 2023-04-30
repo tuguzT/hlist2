@@ -34,7 +34,7 @@ pub trait Map<Mapper>: HList {
     /// );
     /// assert_eq!(list, hlist!(3, 0.0, false));
     /// ```
-    fn map(self, m: Mapper) -> Self::Output;
+    fn map(self, mapper: Mapper) -> Self::Output;
 }
 
 impl<M> Map<M> for Nil {
@@ -52,23 +52,22 @@ where
 {
     type Output = Cons<R, Tail::Output>;
 
-    fn map(self, mut m: M) -> Self::Output {
+    fn map(self, mut mapper: M) -> Self::Output {
         let Cons(head, tail) = self;
-        Cons(m(head), tail.map(m))
+        Cons(mapper(head), tail.map(mapper))
     }
 }
 
 impl<MHead, MTail, Head, Tail, R> Map<Cons<MHead, MTail>> for Cons<Head, Tail>
 where
     MHead: FnOnce(Head) -> R,
-    MTail: HList,
     Tail: Map<MTail>,
 {
     type Output = Cons<R, Tail::Output>;
 
-    fn map(self, m: Cons<MHead, MTail>) -> Self::Output {
+    fn map(self, mapper: Cons<MHead, MTail>) -> Self::Output {
         let Cons(head, tail) = self;
-        let Cons(m_head, m_tail) = m;
-        Cons(m_head(head), tail.map(m_tail))
+        let Cons(mapper_head, mapper_tail) = mapper;
+        Cons(mapper_head(head), tail.map(mapper_tail))
     }
 }

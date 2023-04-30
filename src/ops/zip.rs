@@ -46,7 +46,10 @@ where
 
     fn zip(self, other: Cons<OHead, OTail>) -> Self::Output {
         let Cons(head, tail) = self;
-        let Cons(o_head, o_tail) = other;
-        Cons((head, o_head), tail.zip(o_tail))
+        let Cons(other_head, other_tail) = other;
+
+        let head = (head, other_head);
+        let tail = tail.zip(other_tail);
+        Cons(head, tail)
     }
 }
