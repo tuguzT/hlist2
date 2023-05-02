@@ -69,6 +69,7 @@
 #![no_std]
 
 pub mod convert;
+pub mod iter;
 pub mod ops;
 
 /// An empty heterogenous list.
