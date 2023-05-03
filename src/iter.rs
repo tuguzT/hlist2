@@ -58,7 +58,7 @@ use self::impl_details::{PrepareIter, ReadyIter};
 /// assert_eq!(iter.len(), 5);
 ///
 /// let item = iter.next();
-/// assert_eq!(item, Some(5));
+/// assert_eq!(item, Some(1));
 /// assert_eq!(iter.len(), 4);
 /// ```
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
@@ -209,18 +209,17 @@ mod impl_details {
 
         fn next(&mut self) -> Option<Self::Item> {
             let Cons(head, tail) = self;
-            match tail.next() {
-                Some(value) => Some(value),
-                None => head.take(),
+            match head.take() {
+                Some(item) => Some(item),
+                None => tail.next(),
             }
         }
 
         fn len(&self) -> usize {
             let Cons(head, tail) = self;
-            match head {
-                Some(_) => 1 + ReadyIter::len(tail),
-                None => 0,
-            }
+            let head = head.is_some() as usize;
+            let tail = ReadyIter::len(tail);
+            head + tail
         }
     }
 }
