@@ -40,10 +40,7 @@
 
 use core::iter::FusedIterator;
 
-use crate::{
-    ops::{ToMut, ToRef},
-    Cons,
-};
+use crate::{ops::ToRef, Cons};
 
 use self::impl_details::{PrepareIter, ReadyIter};
 
@@ -115,11 +112,11 @@ where
 impl<'a, Head, Tail> IntoIterator for &'a Cons<Head, Tail>
 where
     Cons<Head, Tail>: ToRef,
-    <Cons<Head, Tail> as ToRef>::Output<'a>: PrepareIter,
-    <<Cons<Head, Tail> as ToRef>::Output<'a> as PrepareIter>::Output: ReadyIter<Item = &'a Head>,
+    <Cons<Head, Tail> as ToRef>::Ref<'a>: PrepareIter,
+    <<Cons<Head, Tail> as ToRef>::Ref<'a> as PrepareIter>::Output: ReadyIter<Item = &'a Head>,
 {
     type Item = &'a Head;
-    type IntoIter = IntoIter<<Cons<Head, Tail> as ToRef>::Output<'a>>;
+    type IntoIter = IntoIter<<Cons<Head, Tail> as ToRef>::Ref<'a>>;
 
     fn into_iter(self) -> Self::IntoIter {
         let prepared = self.to_ref();
@@ -130,13 +127,13 @@ where
 
 impl<'a, Head, Tail> IntoIterator for &'a mut Cons<Head, Tail>
 where
-    Cons<Head, Tail>: ToMut,
-    <Cons<Head, Tail> as ToMut>::Output<'a>: PrepareIter,
-    <<Cons<Head, Tail> as ToMut>::Output<'a> as PrepareIter>::Output:
+    Cons<Head, Tail>: ToRef,
+    <Cons<Head, Tail> as ToRef>::RefMut<'a>: PrepareIter,
+    <<Cons<Head, Tail> as ToRef>::RefMut<'a> as PrepareIter>::Output:
         ReadyIter<Item = &'a mut Head>,
 {
     type Item = &'a mut Head;
-    type IntoIter = IntoIter<<Cons<Head, Tail> as ToMut>::Output<'a>>;
+    type IntoIter = IntoIter<<Cons<Head, Tail> as ToRef>::RefMut<'a>>;
 
     fn into_iter(self) -> Self::IntoIter {
         let prepared = self.to_mut();

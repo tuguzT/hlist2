@@ -11,7 +11,6 @@ pub use self::{
     prepend::Prepend,
     reverse::Reverse,
     rfold::RFold,
-    to_mut::ToMut,
     to_ref::ToRef,
     unzip::Unzip,
     zip::Zip,
@@ -30,7 +29,6 @@ mod pop_front;
 mod prepend;
 mod reverse;
 mod rfold;
-mod to_mut;
 mod to_ref;
 mod unzip;
 mod zip;
