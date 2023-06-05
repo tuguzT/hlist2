@@ -57,12 +57,35 @@ impl<A, F> RFold<A, F> for Nil {
 impl<A, F, Head, Tail> RFold<A, F> for Cons<Head, Tail>
 where
     F: FnMut(A, Head) -> A,
-    Tail: for<'a> RFold<A, &'a mut F>,
+    Tail: RFoldWithFolder<A, F>,
 {
-    fn rfold(self, init: A, mut folder: F) -> A {
+    fn rfold(self, init: A, folder: F) -> A {
         let Cons(head, tail) = self;
-        let init = tail.rfold(init, &mut folder);
+        let (init, mut folder) = tail.rfold_with_folder(init, folder);
         folder(init, head)
+    }
+}
+
+trait RFoldWithFolder<Accumulator, Folder>: HList {
+    fn rfold_with_folder(self, init: Accumulator, folder: Folder) -> (Accumulator, Folder);
+}
+
+impl<A, F> RFoldWithFolder<A, F> for Nil {
+    fn rfold_with_folder(self, init: A, folder: F) -> (A, F) {
+        (init, folder)
+    }
+}
+
+impl<A, F, Head, Tail> RFoldWithFolder<A, F> for Cons<Head, Tail>
+where
+    F: FnMut(A, Head) -> A,
+    Tail: RFoldWithFolder<A, F>,
+{
+    fn rfold_with_folder(self, init: A, folder: F) -> (A, F) {
+        let Cons(head, tail) = self;
+        let (init, mut folder) = tail.rfold_with_folder(init, folder);
+        let init = folder(init, head);
+        (init, folder)
     }
 }
 
