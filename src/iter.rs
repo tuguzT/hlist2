@@ -57,6 +57,10 @@ use self::impl_details::{PrepareIter, ReadyIter};
 /// let item = iter.next();
 /// assert_eq!(item, Some(1));
 /// assert_eq!(iter.len(), 4);
+///
+/// let item = iter.next_back();
+/// assert_eq!(item, Some(5));
+/// assert_eq!(iter.len(), 3);
 /// ```
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
 pub struct IntoIter<T>
@@ -80,6 +84,16 @@ where
     fn size_hint(&self) -> (usize, Option<usize>) {
         let len = self.len();
         (len, Some(len))
+    }
+}
+
+impl<T> DoubleEndedIterator for IntoIter<T>
+where
+    T: PrepareIter,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let Self { prepared } = self;
+        prepared.next_back()
     }
 }
 
@@ -263,6 +277,8 @@ mod impl_details {
 
         fn next(&mut self) -> Option<Self::Item>;
 
+        fn next_back(&mut self) -> Option<Self::Item>;
+
         fn len(&self) -> usize;
     }
 
@@ -272,6 +288,10 @@ mod impl_details {
         fn next(&mut self) -> Option<Self::Item> {
             let Cons(head, _) = self;
             head.take()
+        }
+
+        fn next_back(&mut self) -> Option<Self::Item> {
+            self.next()
         }
 
         fn len(&self) -> usize {
@@ -291,6 +311,14 @@ mod impl_details {
             match head.take() {
                 Some(item) => Some(item),
                 None => tail.next(),
+            }
+        }
+
+        fn next_back(&mut self) -> Option<Self::Item> {
+            let Cons(head, tail) = self;
+            match tail.next_back() {
+                Some(item) => Some(item),
+                None => head.take(),
             }
         }
 
