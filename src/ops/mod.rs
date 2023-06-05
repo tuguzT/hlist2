@@ -5,7 +5,7 @@ pub use self::{
     extend::Extend,
     fold::{Fold, FoldFn, Folder, RFold},
     get::{Get, Here, There},
-    map::Map,
+    map::{Map, MapFn, Mapper},
     pop::Pop,
     pop_front::PopFront,
     prepend::Prepend,
