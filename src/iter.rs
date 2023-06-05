@@ -40,7 +40,7 @@
 
 use core::iter::FusedIterator;
 
-use crate::{ops::ToRef, Cons};
+use crate::{ops::ToRef, Cons, Nil};
 
 use self::impl_details::{PrepareIter, ReadyIter};
 
@@ -139,6 +139,88 @@ where
         let prepared = self.to_mut();
         let prepared = prepared.prepare_iter();
         IntoIter { prepared }
+    }
+}
+
+impl<A> FromIterator<A> for Nil {
+    /// Creates an empty heterogenous list from an empty iterator.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if input iterator was not empty,
+    /// or if there is no space for elements from the iterator.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::hlist;
+    ///
+    /// let hlist!() = core::iter::empty::<i32>().collect();
+    /// ```
+    ///
+    /// Again, this will panic if iterator is not empty:
+    ///
+    /// ```should_panic
+    /// use hlist2::hlist;
+    ///
+    /// let hlist!() = [0; 5].into_iter().collect();
+    /// ```
+    fn from_iter<T>(iter: T) -> Self
+    where
+        T: IntoIterator<Item = A>,
+    {
+        let mut iter = iter.into_iter();
+        if iter.next().is_some() {
+            panic!("too many elements in the iterator")
+        }
+        Nil
+    }
+}
+
+impl<Head, Tail> FromIterator<Head> for Cons<Head, Tail>
+where
+    Tail: FromIterator<Head>,
+{
+    /// Creates a new heterogenous list from an input iterator.
+    ///
+    /// Iterator must contain the same count of elements as the target list type.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if there is not enough elements in the iterator
+    /// or if there is no space for elements from the iterator.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::hlist;
+    ///
+    /// let hlist!(a, b, c, d, e) = [42; 5].into_iter().collect();
+    /// ```
+    ///
+    /// If iterator is too long, this call will panic:
+    ///
+    /// ```should_panic
+    /// use hlist2::hlist;
+    ///
+    /// let hlist!(a, b, c, d, e) = [42; 10].into_iter().collect();
+    /// ```
+    ///
+    /// If iterator is too short, this also will panic:
+    ///
+    /// ```should_panic
+    /// use hlist2::hlist;
+    ///
+    /// let hlist!(a, b, c, d, e) = [42; 1].into_iter().collect();
+    /// ```
+    fn from_iter<T>(iter: T) -> Self
+    where
+        T: IntoIterator<Item = Head>,
+    {
+        let mut iter = iter.into_iter();
+        let head = iter.next().expect("not enough elements in the iterator");
+        let from_iter = iter.collect();
+        Cons(head, from_iter)
     }
 }
 
