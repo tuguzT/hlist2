@@ -1,5 +1,7 @@
 use crate::{Cons, HList, Nil};
 
+use super::{FoldFn, Folder};
+
 /// Fold every element of the heterogenous list into an accumulator.
 pub trait Fold<Accumulator, Folder>: HList {
     /// Folds every element into an accumulator
@@ -39,6 +41,37 @@ pub trait Fold<Accumulator, Folder>: HList {
     /// );
     /// assert_eq!(folded, 42.0);
     /// ```
+    ///
+    /// Or with special implementation of [folder function](FoldFn):
+    ///
+    /// ```
+    /// use hlist2::{
+    ///     hlist,
+    ///     ops::{Fold, FoldFn, Folder},
+    /// };
+    ///
+    /// struct MyFoldFn;
+    ///
+    /// impl FoldFn<f32, i32> for MyFoldFn {
+    ///     fn fold(&mut self, acc: f32, i: i32) -> f32 {
+    ///         i as f32 + acc
+    ///     }
+    /// }
+    /// impl FoldFn<f32, bool> for MyFoldFn {
+    ///     fn fold(&mut self, acc: f32, b: bool) -> f32 {
+    ///         if !b && acc > 42.0 { 9000.0 } else { 0.0 }
+    ///     }
+    /// }
+    /// impl FoldFn<f32, f32> for MyFoldFn {
+    ///     fn fold(&mut self, acc: f32, f: f32) -> f32 {
+    ///         f + acc
+    ///     }
+    /// }
+    ///
+    /// let list = hlist!(1, false, 42.0);
+    /// let folded = list.fold(8918.0, Folder(MyFoldFn));
+    /// assert_eq!(folded, 9042.0);
+    /// ```
     fn fold(self, init: Accumulator, folder: Folder) -> Accumulator;
 }
 
@@ -70,5 +103,17 @@ where
         let Cons(folder_head, folder_tail) = folder;
         let init = folder_head(init, head);
         tail.fold(init, folder_tail)
+    }
+}
+
+impl<A, F, Head, Tail> Fold<A, Folder<F>> for Cons<Head, Tail>
+where
+    F: FoldFn<A, Head>,
+    Tail: Fold<A, Folder<F>>,
+{
+    fn fold(self, init: A, mut folder: Folder<F>) -> A {
+        let Cons(head, tail) = self;
+        let init = folder.fold(init, head);
+        tail.fold(init, folder)
     }
 }

@@ -3,7 +3,7 @@
 pub use self::{
     append::Append,
     extend::Extend,
-    fold::{Fold, RFold},
+    fold::{Fold, FoldFn, Folder, RFold},
     get::{Get, Here, There},
     map::Map,
     pop::Pop,

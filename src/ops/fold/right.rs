@@ -1,5 +1,7 @@
 use crate::{Cons, HList, Nil};
 
+use super::{FoldFn, Folder};
+
 /// Right fold every element of the heterogenous list into an accumulator.
 pub trait RFold<Accumulator, Folder>: HList {
     /// Folds every element into an accumulator from the back
@@ -45,6 +47,37 @@ pub trait RFold<Accumulator, Folder>: HList {
     /// );
     /// assert_eq!(folded, 9001.0);
     /// ```
+    ///
+    /// Or with special implementation of [folder function](FoldFn):
+    ///
+    /// ```
+    /// use hlist2::{
+    ///     hlist,
+    ///     ops::{FoldFn, Folder, RFold},
+    /// };
+    ///
+    /// struct MyFoldFn;
+    ///
+    /// impl FoldFn<f32, i32> for MyFoldFn {
+    ///     fn fold(&mut self, acc: f32, i: i32) -> f32 {
+    ///         i as f32 + acc
+    ///     }
+    /// }
+    /// impl FoldFn<f32, bool> for MyFoldFn {
+    ///     fn fold(&mut self, acc: f32, b: bool) -> f32 {
+    ///         if !b && acc > 42.0 { 9000.0 } else { 0.0 }
+    ///     }
+    /// }
+    /// impl FoldFn<f32, f32> for MyFoldFn {
+    ///     fn fold(&mut self, acc: f32, f: f32) -> f32 {
+    ///         f + acc
+    ///     }
+    /// }
+    ///
+    /// let list = hlist!(1, false, 42.0);
+    /// let folded = list.rfold(8918.0, Folder(MyFoldFn));
+    /// assert_eq!(folded, 9001.0);
+    /// ```
     fn rfold(self, init: Accumulator, folder: Folder) -> Accumulator;
 }
 
@@ -63,6 +96,31 @@ where
         let Cons(head, tail) = self;
         let (init, mut folder) = tail.rfold_with_folder(init, folder);
         folder(init, head)
+    }
+}
+
+impl<A, FHead, FTail, Head, Tail> RFold<A, Cons<FHead, FTail>> for Cons<Head, Tail>
+where
+    FHead: FnOnce(A, Head) -> A,
+    Tail: RFold<A, FTail>,
+{
+    fn rfold(self, init: A, folder: Cons<FHead, FTail>) -> A {
+        let Cons(head, tail) = self;
+        let Cons(folder_head, folder_tail) = folder;
+        let init = tail.rfold(init, folder_tail);
+        folder_head(init, head)
+    }
+}
+
+impl<A, F, Head, Tail> RFold<A, Folder<F>> for Cons<Head, Tail>
+where
+    F: FoldFn<A, Head>,
+    Tail: RFoldWithFolder<A, Folder<F>>,
+{
+    fn rfold(self, init: A, folder: Folder<F>) -> A {
+        let Cons(head, tail) = self;
+        let (init, mut folder) = tail.rfold_with_folder(init, folder);
+        folder.fold(init, head)
     }
 }
 
@@ -89,15 +147,15 @@ where
     }
 }
 
-impl<A, FHead, FTail, Head, Tail> RFold<A, Cons<FHead, FTail>> for Cons<Head, Tail>
+impl<A, F, Head, Tail> RFoldWithFolder<A, Folder<F>> for Cons<Head, Tail>
 where
-    FHead: FnOnce(A, Head) -> A,
-    Tail: RFold<A, FTail>,
+    F: FoldFn<A, Head>,
+    Tail: RFoldWithFolder<A, Folder<F>>,
 {
-    fn rfold(self, init: A, folder: Cons<FHead, FTail>) -> A {
+    fn rfold_with_folder(self, init: A, folder: Folder<F>) -> (A, Folder<F>) {
         let Cons(head, tail) = self;
-        let Cons(folder_head, folder_tail) = folder;
-        let init = tail.rfold(init, folder_tail);
-        folder_head(init, head)
+        let (init, mut folder) = tail.rfold_with_folder(init, folder);
+        let init = folder.fold(init, head);
+        (init, folder)
     }
 }
