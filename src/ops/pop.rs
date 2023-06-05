@@ -1,11 +1,13 @@
 use crate::{Cons, HList, Nil};
 
-use super::{Pair, Prepend};
+use super::Prepend;
 
 /// Remove the last element from the heterogenous list.
 pub trait Pop: HList {
-    /// Pair of new heterogenous list after removing the last element and removed element.
-    type Output: Pair;
+    /// The last element of the heterogenous list.
+    type Last;
+    /// Remaining part of the heterogenous list without the last element.
+    type Remaining: HList;
 
     /// Removes the last element from the heterogenous list.
     ///
@@ -18,36 +20,35 @@ pub trait Pop: HList {
     /// use hlist2::{hlist, ops::Pop};
     ///
     /// let list = hlist!(1, 2.0, true);
-    /// let (list, elem) = list.pop();
+    /// let (elem, list) = list.pop();
     /// assert_eq!(list, hlist!(1, 2.0));
     /// assert_eq!(elem, true);
     /// ```
-    fn pop(self) -> Self::Output;
+    fn pop(self) -> (Self::Last, Self::Remaining);
 }
 
 impl<Head> Pop for Cons<Head, Nil> {
-    type Output = (Nil, Head);
+    type Last = Head;
+    type Remaining = Nil;
 
-    fn pop(self) -> Self::Output {
+    fn pop(self) -> (Self::Last, Self::Remaining) {
         let Cons(head, nil) = self;
-        (nil, head)
+        (head, nil)
     }
 }
 
 impl<Head, Tail> Pop for Cons<Head, Tail>
 where
     Tail: Pop,
-    <Tail::Output as Pair>::First: Prepend,
+    Tail::Remaining: Prepend,
 {
-    type Output = (
-        <<Tail::Output as Pair>::First as Prepend>::Output<Head>,
-        <Tail::Output as Pair>::Second,
-    );
+    type Last = Tail::Last;
+    type Remaining = <Tail::Remaining as Prepend>::Output<Head>;
 
-    fn pop(self) -> Self::Output {
+    fn pop(self) -> (Self::Last, Self::Remaining) {
         let Cons(head, tail) = self;
-        let (list, elem) = tail.pop().destruct();
+        let (elem, list) = tail.pop();
         let list = list.prepend(head);
-        (list, elem)
+        (elem, list)
     }
 }

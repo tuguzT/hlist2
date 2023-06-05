@@ -1,7 +1,5 @@
 use crate::{Cons, HList, Nil};
 
-use super::Pair;
-
 /// Convert a heterogenous list of pairs into a pair of heterogenous lists.
 pub trait Unzip: HList {
     /// Type of the first heterogenous list from the resulting pair.
@@ -41,17 +39,16 @@ impl Unzip for Nil {
     }
 }
 
-impl<Head, Tail> Unzip for Cons<Head, Tail>
+impl<First, Second, Tail> Unzip for Cons<(First, Second), Tail>
 where
-    Head: Pair,
     Tail: Unzip,
 {
-    type First = Cons<Head::First, Tail::First>;
-    type Second = Cons<Head::Second, Tail::Second>;
+    type First = Cons<First, Tail::First>;
+    type Second = Cons<Second, Tail::Second>;
 
     fn unzip(self) -> (Self::First, Self::Second) {
         let Cons(head, tail) = self;
-        let (head_first, head_second) = head.destruct();
+        let (head_first, head_second) = head;
         let (tail_first, tail_second) = tail.unzip();
 
         let first = Cons(head_first, tail_first);

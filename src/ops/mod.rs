@@ -16,14 +16,11 @@ pub use self::{
     zip::Zip,
 };
 
-use self::pair::Pair;
-
 mod append;
 mod extend;
 mod fold;
 mod get;
 mod map;
-mod pair;
 mod pop;
 mod pop_front;
 mod prepend;
