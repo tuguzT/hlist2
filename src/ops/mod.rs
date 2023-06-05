@@ -3,14 +3,13 @@
 pub use self::{
     append::Append,
     extend::Extend,
-    fold::Fold,
+    fold::{Fold, RFold},
     get::{Get, Here, There},
     map::Map,
     pop::Pop,
     pop_front::PopFront,
     prepend::Prepend,
     reverse::Reverse,
-    rfold::RFold,
     to_ref::ToRef,
     unzip::Unzip,
     zip::Zip,
@@ -25,7 +24,6 @@ mod pop;
 mod pop_front;
 mod prepend;
 mod reverse;
-mod rfold;
 mod to_ref;
 mod unzip;
 mod zip;
