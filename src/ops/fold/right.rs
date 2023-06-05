@@ -23,7 +23,7 @@ pub trait RFold<Accumulator, Folder>: HList {
     /// ```
     /// use hlist2::{hlist, ops::RFold};
     ///
-    /// let list = hlist!(1, 2, 3, 4, 5);
+    /// let list = hlist![1, 2, 3, 4, 5];
     /// let zero = "0".to_string();
     /// let result = list.rfold(zero, |acc, x| {
     ///     format!("({x} + {acc})")
@@ -36,14 +36,14 @@ pub trait RFold<Accumulator, Folder>: HList {
     /// ```
     /// use hlist2::{hlist, ops::RFold};
     ///
-    /// let list = hlist!(1, false, 42.0);
+    /// let list = hlist![1, false, 42.0];
     /// let folded = list.rfold(
     ///     1.0,
-    ///     hlist!(
+    ///     hlist![
     ///         |acc, i| i as f32 + acc,
     ///         |acc, b: bool| if !b && acc > 42.0 { 9000.0 } else { 0.0 },
     ///         |acc, f| f + acc,
-    ///     ),
+    ///     ],
     /// );
     /// assert_eq!(folded, 9001.0);
     /// ```
@@ -74,7 +74,7 @@ pub trait RFold<Accumulator, Folder>: HList {
     ///     }
     /// }
     ///
-    /// let list = hlist!(1, false, 42.0);
+    /// let list = hlist![1, false, 42.0];
     /// let folded = list.rfold(8918.0, Folder(MyFoldFn));
     /// assert_eq!(folded, 9001.0);
     /// ```

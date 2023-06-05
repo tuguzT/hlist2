@@ -15,8 +15,8 @@ pub trait Append: HList {
     /// ```
     /// use hlist2::{hlist, ops::Append};
     ///
-    /// let list = hlist!(1, 2.0, true);
-    /// assert_eq!(list.append("hello world"), hlist!(1, 2.0, true, "hello world"));
+    /// let list = hlist![1, 2.0, true];
+    /// assert_eq!(list.append("hello world"), hlist![1, 2.0, true, "hello world"]);
     /// ```
     fn append<T>(self, value: T) -> Self::Output<T>;
 }

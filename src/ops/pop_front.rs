@@ -17,10 +17,10 @@ pub trait PopFront: HList {
     /// ```
     /// use hlist2::{hlist, ops::PopFront};
     ///
-    /// let list = hlist!(1, 2.0, true);
+    /// let list = hlist![1, 2.0, true];
     /// let (elem, list) = list.pop_front();
     /// assert_eq!(elem, 1);
-    /// assert_eq!(list, hlist!(2.0, true));
+    /// assert_eq!(list, hlist![2.0, true]);
     /// ```
     fn pop_front(self) -> (Self::First, Self::Remaining);
 }

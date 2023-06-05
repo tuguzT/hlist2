@@ -43,9 +43,9 @@ The first one should be used for creation of heterogenous lists or for pattern m
 while the second one should be used to name the type of heterogenous list.
 
 So instead of writing `Cons(1, Cons(2.0, Cons(true, Nil)))`
-we can write more readable and tuple-like expression like `hlist!(1, 2.0, true)`.
+we can write more readable expression like `hlist![1, 2.0, true]`.
 
-To name the type of such list, we can write `HList!(i32, f64, bool)`
+To name the type of such list, we can write `HList![i32, f64, bool]`
 instead of `Cons<i32, Cons<f64, Cons<bool, Nil>>>`.
 
 ## Tuple compatibility

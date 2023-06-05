@@ -17,8 +17,8 @@ pub trait ToRef: HList {
     /// ```
     /// use hlist2::{hlist, ops::ToRef};
     ///
-    /// let list = hlist!(1, 2.0, false);
-    /// assert_eq!(list.to_ref(), hlist!(&1, &2.0, &false));
+    /// let list = hlist![1, 2.0, false];
+    /// assert_eq!(list.to_ref(), hlist![&1, &2.0, &false]);
     /// ```
     fn to_ref(&self) -> Self::Ref<'_>;
 
@@ -37,8 +37,8 @@ pub trait ToRef: HList {
     /// ```
     /// use hlist2::{hlist, ops::ToRef};
     ///
-    /// let mut list = hlist!(1, 2.0, false);
-    /// assert_eq!(list.to_mut(), hlist!(&mut 1, &mut 2.0, &mut false));
+    /// let mut list = hlist![1, 2.0, false];
+    /// assert_eq!(list.to_mut(), hlist![&mut 1, &mut 2.0, &mut false]);
     /// ```
     fn to_mut(&mut self) -> Self::RefMut<'_>;
 }

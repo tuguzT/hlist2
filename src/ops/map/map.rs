@@ -19,8 +19,8 @@ pub trait Map<Mapper>: HList {
     /// ```
     /// use hlist2::{hlist, ops::Map};
     ///
-    /// let list = hlist!(1, 2, 3);
-    /// assert_eq!(list.map(|x| 2 * x), hlist!(2, 4, 6));
+    /// let list = hlist![1, 2, 3];
+    /// assert_eq!(list.map(|x| 2 * x), hlist![2, 4, 6]);
     /// ```
     ///
     /// Mapping of heterogenous list is possible with heterogenous list of closures as folder:
@@ -28,15 +28,15 @@ pub trait Map<Mapper>: HList {
     /// ```
     /// use hlist2::{hlist, ops::Map};
     ///
-    /// let list = hlist!(1, 2.0, true);
+    /// let list = hlist![1, 2.0, true];
     /// let list = list.map(
-    ///     hlist!(
+    ///     hlist![
     ///         |i| i + 2,
     ///         |f| f - 2.0,
     ///         |b: bool| !b,
-    ///     )
+    ///     ]
     /// );
-    /// assert_eq!(list, hlist!(3, 0.0, false));
+    /// assert_eq!(list, hlist![3, 0.0, false]);
     /// ```
     ///
     /// Or with special implementation of [mapper function](MapFn):
@@ -64,7 +64,7 @@ pub trait Map<Mapper>: HList {
     ///
     /// let list = hlist![1, false, 42f32];
     /// let list = list.map(Mapper(MyMapFn));
-    /// assert_eq!(list, hlist!(4, true, 9001.0));
+    /// assert_eq!(list, hlist![4, true, 9001.0]);
     /// ```
     fn map(self, mapper: Mapper) -> Self::Output;
 }

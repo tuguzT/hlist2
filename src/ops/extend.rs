@@ -17,10 +17,10 @@ pub trait Extend: HList {
     /// ```
     /// use hlist2::{hlist, ops::Extend};
     ///
-    /// let first = hlist!(1, 2.0);
-    /// let second = hlist!(true, "hello world");
-    /// assert_eq!(first.extend(second), hlist!(1, 2.0, true, "hello world"));
-    /// assert_eq!(second.extend(first), hlist!(true, "hello world", 1, 2.0));
+    /// let first = hlist![1, 2.0];
+    /// let second = hlist![true, "hello world"];
+    /// assert_eq!(first.extend(second), hlist![1, 2.0, true, "hello world"]);
+    /// assert_eq!(second.extend(first), hlist![true, "hello world", 1, 2.0]);
     /// ```
     fn extend<T>(self, list: T) -> Self::Output<T>
     where

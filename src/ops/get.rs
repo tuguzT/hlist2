@@ -11,7 +11,7 @@ pub trait Get<T, I>: HList {
     /// ```
     /// use hlist2::{hlist, ops::Get};
     ///
-    /// let list = hlist!(0_i32, 1_i64);
+    /// let list = hlist![0_i32, 1_i64];
     /// let a: i64 = *list.get();
     /// assert!(a == 1);
     /// ```
@@ -24,7 +24,7 @@ pub trait Get<T, I>: HList {
     /// ```
     /// use hlist2::{hlist, ops::Get};
     ///
-    /// let mut list = hlist!(0_i32, 1_i64);
+    /// let mut list = hlist![0_i32, 1_i64];
     /// *list.get_mut() = 5_i32;
     /// let a: i32 = *list.get();
     /// assert!(a == 5);

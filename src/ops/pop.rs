@@ -19,9 +19,9 @@ pub trait Pop: HList {
     /// ```
     /// use hlist2::{hlist, ops::Pop};
     ///
-    /// let list = hlist!(1, 2.0, true);
+    /// let list = hlist![1, 2.0, true];
     /// let (elem, list) = list.pop();
-    /// assert_eq!(list, hlist!(1, 2.0));
+    /// assert_eq!(list, hlist![1, 2.0]);
     /// assert_eq!(elem, true);
     /// ```
     fn pop(self) -> (Self::Last, Self::Remaining);

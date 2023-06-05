@@ -20,7 +20,7 @@ pub trait Fold<Accumulator, Folder>: HList {
     /// ```
     /// use hlist2::{hlist, ops::Fold};
     ///
-    /// let list = hlist!(1, 2, 3);
+    /// let list = hlist![1, 2, 3];
     /// let sum = list.fold(0, |acc, x| acc + x);
     /// assert_eq!(sum, 6);
     /// ```
@@ -30,14 +30,14 @@ pub trait Fold<Accumulator, Folder>: HList {
     /// ```
     /// use hlist2::{hlist, ops::Fold};
     ///
-    /// let list = hlist!(1, false, 42.0);
+    /// let list = hlist![1, false, 42.0];
     /// let folded = list.fold(
     ///     1.0,
-    ///     hlist!(
+    ///     hlist![
     ///         |acc, i| i as f32 + acc,
     ///         |acc, b: bool| if !b && acc > 42.0 { 9000.0 } else { 0.0 },
     ///         |acc, f| f + acc,
-    ///     ),
+    ///     ],
     /// );
     /// assert_eq!(folded, 42.0);
     /// ```
@@ -68,7 +68,7 @@ pub trait Fold<Accumulator, Folder>: HList {
     ///     }
     /// }
     ///
-    /// let list = hlist!(1, false, 42.0);
+    /// let list = hlist![1, false, 42.0];
     /// let folded = list.fold(8918.0, Folder(MyFoldFn));
     /// assert_eq!(folded, 9042.0);
     /// ```

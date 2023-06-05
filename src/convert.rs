@@ -20,7 +20,7 @@ pub trait FromHList {
     /// ```
     /// use hlist2::{hlist, convert::FromHList};
     ///
-    /// let list = hlist!(1, 2.0, true, "hello world");
+    /// let list = hlist![1, 2.0, true, "hello world"];
     /// let tuple: (_, _, _, _) = FromHList::from_hlist(list);
     /// assert_eq!(tuple, (1, 2.0, true, "hello world"));
     /// ```
@@ -90,7 +90,7 @@ pub trait IntoHList {
     ///
     /// let tuple = (1, 2.0, true, "hello world");
     /// let list = tuple.into_hlist();
-    /// assert_eq!(list, hlist!(1, 2.0, true, "hello world"));
+    /// assert_eq!(list, hlist![1, 2.0, true, "hello world"]);
     /// ```
     fn into_hlist(self) -> Self::HList;
 }

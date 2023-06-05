@@ -15,8 +15,8 @@ pub trait Prepend: HList {
     /// ```
     /// use hlist2::{hlist, ops::Prepend};
     ///
-    /// let list = hlist!(2.0, true, "hello world");
-    /// assert_eq!(list.prepend(1), hlist!(1, 2.0, true, "hello world"));
+    /// let list = hlist![2.0, true, "hello world"];
+    /// assert_eq!(list.prepend(1), hlist![1, 2.0, true, "hello world"]);
     /// ```
     fn prepend<T>(self, value: T) -> Self::Output<T>;
 }

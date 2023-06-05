@@ -45,9 +45,9 @@
 //! while the second one should be used to name the type of heterogenous list.
 //!
 //! So instead of writing `Cons(1, Cons(2.0, Cons(true, Nil)))`
-//! we can write more readable and tuple-like expression like `hlist!(1, 2.0, true)`.
+//! we can write more readable expression like `hlist![1, 2.0, true]`.
 //!
-//! To name the type of such list, we can write `HList!(i32, f64, bool)`
+//! To name the type of such list, we can write `HList![i32, f64, bool]`
 //! instead of `Cons<i32, Cons<f64, Cons<bool, Nil>>>`.
 //!
 //! # Tuple compatibility
@@ -92,9 +92,9 @@ pub trait HList: sealed::Sealed {
     /// ```
     /// use hlist2::HList;
     ///
-    /// assert_eq!(<HList!()>::LEN, 0);
-    /// assert_eq!(<HList!(i32)>::LEN, 1);
-    /// assert_eq!(<HList!(i32, f64, bool, &str)>::LEN, 4);
+    /// assert_eq!(<HList![]>::LEN, 0);
+    /// assert_eq!(<HList![i32]>::LEN, 1);
+    /// assert_eq!(<HList![i32, f64, bool, &str]>::LEN, 4);
     /// ```
     const LEN: usize;
 
@@ -105,9 +105,9 @@ pub trait HList: sealed::Sealed {
     /// ```
     /// use hlist2::{hlist, HList};
     ///
-    /// assert_eq!(hlist!().len(), 0);
-    /// assert_eq!(hlist!(1).len(), 1);
-    /// assert_eq!(hlist!(1, 2.0, true, "hello world").len(), 4);
+    /// assert_eq!(hlist![].len(), 0);
+    /// assert_eq!(hlist![1].len(), 1);
+    /// assert_eq!(hlist![1, 2.0, true, "hello world"].len(), 4);
     /// ```
     fn len(&self) -> usize {
         Self::LEN
@@ -122,8 +122,8 @@ pub trait HList: sealed::Sealed {
     ///
     /// use hlist2::{hlist, HList};
     ///
-    /// assert!(hlist!().is_empty());
-    /// assert!(hlist!(1, 2.0, true).is_empty().not());
+    /// assert!(hlist![].is_empty());
+    /// assert!(hlist![1, 2.0, true].is_empty().not());
     /// ```
     fn is_empty(&self) -> bool {
         self.len() == 0
@@ -165,7 +165,7 @@ mod sealed {
 /// ```
 /// use hlist2::{hlist, Cons, Nil};
 ///
-/// let list = hlist!(1, 2.0, true);
+/// let list = hlist![1, 2.0, true];
 /// assert_eq!(list, Cons(1, Cons(2.0, Cons(true, Nil))));
 /// ```
 ///
@@ -175,7 +175,7 @@ mod sealed {
 /// ```
 /// use hlist2::hlist;
 ///
-/// let hlist!(a, b, c, d) = hlist!(10, -15.0, "hello world", false);
+/// let hlist![a, b, c, d] = hlist![10, -15.0, "hello world", false];
 /// assert_eq!((a, b, c, d), (10, -15.0, "hello world", false));
 /// ```
 #[macro_export]
@@ -211,7 +211,7 @@ macro_rules! hlist {
 /// ```
 /// use hlist2::{hlist, HList, Cons, Nil};
 ///
-/// let list: HList!(i32, f64, bool) = hlist!(1, 2.0, true);
+/// let list: HList![i32, f64, bool] = hlist![1, 2.0, true];
 /// let list: Cons<i32, Cons<f64, Cons<bool, Nil>>> = list;
 /// ```
 #[macro_export]
