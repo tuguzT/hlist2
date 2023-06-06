@@ -40,7 +40,7 @@
 
 use core::iter::FusedIterator;
 
-use crate::{ops::ToRef, Cons, Nil};
+use crate::{ops::ToRef, Cons, HList, Nil};
 
 use self::impl_details::{PrepareIter, ReadyIter};
 
@@ -103,7 +103,7 @@ where
 {
     fn len(&self) -> usize {
         let Self { prepared } = self;
-        prepared.len()
+        ReadyIter::len(prepared)
     }
 }
 
@@ -236,6 +236,19 @@ where
         let from_iter = iter.collect();
         Cons(head, from_iter)
     }
+}
+
+/// Heterogenous list which is effectively *homogenous*,
+/// or contains values of only one type.
+///
+/// This type of list can be turned into an iterator or created from it.
+pub trait Homogenous: HList + IntoIterator + FromIterator<Self::Item> {}
+
+impl<Head, Tail> Homogenous for Cons<Head, Tail>
+where
+    Self: IntoIterator<Item = Head> + FromIterator<Head>,
+    Tail: HList,
+{
 }
 
 mod impl_details {
