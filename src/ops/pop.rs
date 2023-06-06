@@ -7,7 +7,7 @@ pub trait Pop: HList {
     /// The last element of the heterogenous list.
     type Last;
     /// Remaining part of the heterogenous list without the last element.
-    type Remaining: HList;
+    type Remainder: HList;
 
     /// Removes the last element from the heterogenous list.
     ///
@@ -24,14 +24,14 @@ pub trait Pop: HList {
     /// assert_eq!(list, hlist![1, 2.0]);
     /// assert_eq!(elem, true);
     /// ```
-    fn pop(self) -> (Self::Last, Self::Remaining);
+    fn pop(self) -> (Self::Last, Self::Remainder);
 }
 
 impl<Head> Pop for Cons<Head, Nil> {
     type Last = Head;
-    type Remaining = Nil;
+    type Remainder = Nil;
 
-    fn pop(self) -> (Self::Last, Self::Remaining) {
+    fn pop(self) -> (Self::Last, Self::Remainder) {
         let Cons(head, nil) = self;
         (head, nil)
     }
@@ -40,12 +40,12 @@ impl<Head> Pop for Cons<Head, Nil> {
 impl<Head, Tail> Pop for Cons<Head, Tail>
 where
     Tail: Pop,
-    Tail::Remaining: Prepend,
+    Tail::Remainder: Prepend,
 {
     type Last = Tail::Last;
-    type Remaining = <Tail::Remaining as Prepend>::Output<Head>;
+    type Remainder = <Tail::Remainder as Prepend>::Output<Head>;
 
-    fn pop(self) -> (Self::Last, Self::Remaining) {
+    fn pop(self) -> (Self::Last, Self::Remainder) {
         let Cons(head, tail) = self;
         let (elem, list) = tail.pop();
         let list = list.prepend(head);

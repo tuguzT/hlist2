@@ -5,7 +5,7 @@ pub trait PopFront: HList {
     /// The first element of the heterogenous list.
     type First;
     /// Remaining part of the heterogenous list without the first element.
-    type Remaining: HList;
+    type Remainder: HList;
 
     /// Removes the first element from the heterogenous list.
     ///
@@ -22,7 +22,7 @@ pub trait PopFront: HList {
     /// assert_eq!(elem, 1);
     /// assert_eq!(list, hlist![2.0, true]);
     /// ```
-    fn pop_front(self) -> (Self::First, Self::Remaining);
+    fn pop_front(self) -> (Self::First, Self::Remainder);
 }
 
 impl<Head, Tail> PopFront for Cons<Head, Tail>
@@ -30,9 +30,9 @@ where
     Tail: HList,
 {
     type First = Head;
-    type Remaining = Tail;
+    type Remainder = Tail;
 
-    fn pop_front(self) -> (Self::First, Self::Remaining) {
+    fn pop_front(self) -> (Self::First, Self::Remainder) {
         let Cons(head, tail) = self;
         (head, tail)
     }

@@ -1,6 +1,6 @@
-use core::marker::PhantomData;
-
 use crate::{Cons, HList};
+
+use super::{Here, There};
 
 /// Retrieve element of the heterogenous list by type.
 pub trait Get<T, I>: HList {
@@ -13,7 +13,7 @@ pub trait Get<T, I>: HList {
     ///
     /// let list = hlist![0_i32, 1_i64];
     /// let a: i64 = *list.get();
-    /// assert!(a == 1);
+    /// assert_eq!(a, 1);
     /// ```
     fn get(&self) -> &T;
 
@@ -27,31 +27,9 @@ pub trait Get<T, I>: HList {
     /// let mut list = hlist![0_i32, 1_i64];
     /// *list.get_mut() = 5_i32;
     /// let a: i32 = *list.get();
-    /// assert!(a == 5);
+    /// assert_eq!(a, 5);
     /// ```
     fn get_mut(&mut self) -> &mut T;
-}
-
-/// Make sure that [`Here`] and [`There`] indices cannot be constructed.
-enum Never {}
-
-/// Used as an index into an [`trait@HList`] which points to the head of the heterogenous list.
-///
-/// This type of index exists due to lack of specialization in Rust.
-/// This allows multiple implementations of [`Get`] trait based on knowledge
-/// where the actual type is located: in the head or somewhere in the tail of the list.
-pub struct Here {
-    _never: Never,
-}
-
-/// Used as an index into an [`trait@HList`] which points to the tail of the heterogenous list.
-///
-/// This type of index exists due to lack of specialization in Rust.
-/// This allows multiple implementations of [`Get`] trait based on knowledge
-/// where the actual type is located: in the head or somewhere in the tail of the list.
-pub struct There<T> {
-    _marker: PhantomData<fn() -> T>,
-    _never: Never,
 }
 
 /// Desired type is located in the head of the heterogenous list.
