@@ -143,6 +143,10 @@ where
     Tail: HList,
 {
     const LEN: usize = Tail::LEN + 1;
+
+    fn is_empty(&self) -> bool {
+        false
+    }
 }
 
 mod sealed {
@@ -150,7 +154,7 @@ mod sealed {
 
     impl Sealed for crate::Nil {}
 
-    impl<Head, Tail> Sealed for crate::Cons<Head, Tail> {}
+    impl<Head, Tail> Sealed for crate::Cons<Head, Tail> where Tail: Sealed {}
 }
 
 /// Macro creating heterogenous list values from list of expressions.

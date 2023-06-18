@@ -3,6 +3,7 @@
 pub use self::{
     append::Append,
     extend::Extend,
+    flatten::Flatten,
     fold::{Fold, FoldFn, Folder, RFold},
     get::Get,
     index::{Here, There},
@@ -19,6 +20,7 @@ pub use self::{
 
 mod append;
 mod extend;
+mod flatten;
 mod fold;
 mod get;
 mod index;
