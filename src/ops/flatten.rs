@@ -30,15 +30,16 @@ pub trait Flatten: HList {
     /// use hlist2::{hlist, ops::Flatten};
     ///
     /// let d3 = hlist![
-    ///     hlist![hlist![1, 2], hlist![3, 4]],
-    ///     hlist![hlist![5, 6], hlist![7, 8]],
+    ///     hlist![hlist![0, 1], hlist![2, 3]],
+    ///     hlist![hlist![4, 5], hlist![6, 7]],
+    ///     hlist![hlist![8, 9]],
     /// ];
     ///
     /// let d2 = d3.flatten();
-    /// assert_eq!(d2, hlist![hlist![1, 2], hlist![3, 4], hlist![5, 6], hlist![7, 8]]);
+    /// assert_eq!(d2, hlist![hlist![0, 1], hlist![2, 3], hlist![4, 5], hlist![6, 7], hlist![8, 9]]);
     ///
     /// let d1 = d3.flatten().flatten();
-    /// assert_eq!(d1, hlist![1, 2, 3, 4, 5, 6, 7, 8]);
+    /// assert_eq!(d1, hlist![0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     /// ```
     ///
     /// Here we see that `flatten()` does not perform a “deep” flatten. Instead, only one level of nesting is removed.
