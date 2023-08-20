@@ -1,9 +1,12 @@
 use crate::{Cons, HList};
 
-use super::{Get, Here, Prepend, There};
+use super::{Get, Here, Index, Prepend, There};
 
 /// Move element out of the heterogenous list by type.
-pub trait Remove<T, I>: Get<T, I> {
+pub trait Remove<T, I>: Get<T, I>
+where
+    I: Index,
+{
     /// Remaining part of the heterogenous list without a removed element.
     type Remainder: HList;
 
@@ -37,6 +40,7 @@ where
 impl<Head, Tail, FromTail, TailIndex> Remove<FromTail, There<TailIndex>> for Cons<Head, Tail>
 where
     Tail: Remove<FromTail, TailIndex>,
+    TailIndex: Index,
     Tail::Remainder: Prepend,
 {
     type Remainder = <Tail::Remainder as Prepend>::Output<Head>;

@@ -1,9 +1,12 @@
 use crate::{Cons, HList};
 
-use super::{Here, There};
+use super::{Here, Index, There};
 
 /// Retrieve element of the heterogenous list by type.
-pub trait Get<T, I>: HList {
+pub trait Get<T, I>: HList
+where
+    I: Index,
+{
     /// Retrieves a reference to the element of the heterogenous list by type.
     ///
     /// # Examples
@@ -52,6 +55,7 @@ where
 impl<Head, Tail, FromTail, TailIndex> Get<FromTail, There<TailIndex>> for Cons<Head, Tail>
 where
     Tail: Get<FromTail, TailIndex> + ?Sized,
+    TailIndex: Index,
 {
     fn get(&self) -> &FromTail {
         let Cons(_, tail) = self;
