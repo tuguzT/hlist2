@@ -35,7 +35,7 @@ pub trait Get<T, I>: HList {
 /// Desired type is located in the head of the heterogenous list.
 impl<Head, Tail> Get<Head, Here> for Cons<Head, Tail>
 where
-    Tail: HList,
+    Tail: HList + ?Sized,
 {
     fn get(&self) -> &Head {
         let Cons(head, _) = self;
@@ -51,7 +51,7 @@ where
 /// Desired type is located somewhere in the tail of the heterogenous list.
 impl<Head, Tail, FromTail, TailIndex> Get<FromTail, There<TailIndex>> for Cons<Head, Tail>
 where
-    Tail: Get<FromTail, TailIndex>,
+    Tail: Get<FromTail, TailIndex> + ?Sized,
 {
     fn get(&self) -> &FromTail {
         let Cons(_, tail) = self;

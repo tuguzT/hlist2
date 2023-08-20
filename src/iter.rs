@@ -128,6 +128,7 @@ where
     Cons<Head, Tail>: ToRef,
     <Cons<Head, Tail> as ToRef>::Ref<'a>: PrepareIter,
     <<Cons<Head, Tail> as ToRef>::Ref<'a> as PrepareIter>::Output: ReadyIter<Item = &'a Head>,
+    Tail: ?Sized,
 {
     type Item = &'a Head;
     type IntoIter = IntoIter<<Cons<Head, Tail> as ToRef>::Ref<'a>>;
@@ -145,6 +146,7 @@ where
     <Cons<Head, Tail> as ToRef>::RefMut<'a>: PrepareIter,
     <<Cons<Head, Tail> as ToRef>::RefMut<'a> as PrepareIter>::Output:
         ReadyIter<Item = &'a mut Head>,
+    Tail: ?Sized,
 {
     type Item = &'a mut Head;
     type IntoIter = IntoIter<<Cons<Head, Tail> as ToRef>::RefMut<'a>>;
@@ -233,8 +235,8 @@ where
     {
         let mut iter = iter.into_iter();
         let head = iter.next().expect("not enough elements in the iterator");
-        let from_iter = iter.collect();
-        Cons(head, from_iter)
+        let tail = iter.collect();
+        Cons(head, tail)
     }
 }
 
@@ -315,7 +317,7 @@ mod impl_details {
 
     impl<Head, Tail> ReadyIter for Cons<Option<Head>, Tail>
     where
-        Tail: ReadyIter<Item = Head>,
+        Tail: ReadyIter<Item = Head> + ?Sized,
     {
         type Item = Head;
 

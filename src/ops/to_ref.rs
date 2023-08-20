@@ -63,7 +63,7 @@ impl ToRef for Nil {
 
 impl<Head, Tail> ToRef for Cons<Head, Tail>
 where
-    Tail: ToRef,
+    Tail: ToRef + ?Sized,
 {
     type Ref<'a> = Cons<&'a Head, Tail::Ref<'a>>
     where

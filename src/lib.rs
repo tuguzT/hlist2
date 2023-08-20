@@ -78,26 +78,15 @@ pub struct Nil;
 
 /// Heterogenous list with head and tail values, where tail is another heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
-pub struct Cons<Head, Tail>(pub Head, pub Tail);
+pub struct Cons<Head, Tail>(pub Head, pub Tail)
+where
+    Tail: ?Sized;
 
 /// Compile-time heterogenous list.
 ///
 /// This trait is sealed and cannot be implemented outside of this crate.
 /// It is implemented only for [`Cons`] and [`Nil`] structs.
 pub trait HList: sealed::Sealed {
-    /// Length (count of elements) of the heterogenous list.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use hlist2::HList;
-    ///
-    /// assert_eq!(<HList![]>::LEN, 0);
-    /// assert_eq!(<HList![i32]>::LEN, 1);
-    /// assert_eq!(<HList![i32, f64, bool, &str]>::LEN, 4);
-    /// ```
-    const LEN: usize;
-
     /// Returns the length (count of elements) of the heterogenous list.
     ///
     /// # Examples
@@ -109,9 +98,7 @@ pub trait HList: sealed::Sealed {
     /// assert_eq!(hlist![1].len(), 1);
     /// assert_eq!(hlist![1, 2.0, true, "hello world"].len(), 4);
     /// ```
-    fn len(&self) -> usize {
-        Self::LEN
-    }
+    fn len(&self) -> usize;
 
     /// Checks if the heterogenous list is empty.
     ///
@@ -131,7 +118,9 @@ pub trait HList: sealed::Sealed {
 }
 
 impl HList for Nil {
-    const LEN: usize = 0;
+    fn len(&self) -> usize {
+        Self::LEN
+    }
 
     fn is_empty(&self) -> bool {
         true
@@ -140,13 +129,43 @@ impl HList for Nil {
 
 impl<Head, Tail> HList for Cons<Head, Tail>
 where
-    Tail: HList,
+    Tail: HList + ?Sized,
 {
-    const LEN: usize = Tail::LEN + 1;
+    fn len(&self) -> usize {
+        let Cons(_, tail) = self;
+        1 + tail.len()
+    }
 
     fn is_empty(&self) -> bool {
         false
     }
+}
+
+/// Heterogenous list with length (count of elements) known at compile-time.
+pub trait HListLen: HList {
+    /// Length (count of elements) of the heterogenous list.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hlist2::{HList, HListLen};
+    ///
+    /// assert_eq!(<HList![]>::LEN, 0);
+    /// assert_eq!(<HList![i32]>::LEN, 1);
+    /// assert_eq!(<HList![i32, f64, bool, &str]>::LEN, 4);
+    /// ```
+    const LEN: usize;
+}
+
+impl HListLen for Nil {
+    const LEN: usize = 0;
+}
+
+impl<Head, Tail> HListLen for Cons<Head, Tail>
+where
+    Tail: HListLen,
+{
+    const LEN: usize = 1 + Tail::LEN;
 }
 
 mod sealed {
@@ -154,7 +173,7 @@ mod sealed {
 
     impl Sealed for crate::Nil {}
 
-    impl<Head, Tail> Sealed for crate::Cons<Head, Tail> where Tail: Sealed {}
+    impl<Head, Tail> Sealed for crate::Cons<Head, Tail> where Tail: Sealed + ?Sized {}
 }
 
 /// Macro creating heterogenous list values from list of expressions.
