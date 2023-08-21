@@ -6,7 +6,7 @@ pub use self::{
     flatten::Flatten,
     fold::{Fold, FoldFn, Folder, RFold},
     get::Get,
-    index::{Decrement, Here, Increment, Index, There},
+    index::{Dec, Here, Inc, Index, There},
     map::{Map, MapFn, Mapper},
     pop::Pop,
     pop_front::PopFront,

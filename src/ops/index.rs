@@ -1,4 +1,10 @@
-use core::{any::type_name, fmt::Debug, hash::Hash, marker::PhantomData};
+use core::{
+    any::type_name,
+    fmt::Debug,
+    hash::Hash,
+    marker::PhantomData,
+    ops::{Add, Sub},
+};
 
 /// Used as an index into an [`HList`](trait@crate::HList) which points to the head of the heterogenous list.
 ///
@@ -21,6 +27,14 @@ pub struct There<T> {
     phantom: PhantomData<fn() -> T>,
 }
 
+impl<T> There<T> {
+    /// Creates new index which can be represented as value of `T + 1`.
+    pub const fn new() -> Self {
+        let phantom = PhantomData;
+        Self { phantom }
+    }
+}
+
 impl<T> Debug for There<T> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let type_name = type_name::<T>();
@@ -30,8 +44,7 @@ impl<T> Debug for There<T> {
 
 impl<T> Default for There<T> {
     fn default() -> Self {
-        let phantom = Default::default();
-        Self { phantom }
+        Self::new()
     }
 }
 
@@ -80,14 +93,14 @@ impl<T> Hash for There<T> {
 ///
 /// This trait is sealed and cannot be implemented outside of this crate.
 /// It is implemented only for [`Here`] and [`There`] structs.
-pub trait Index: sealed::Sealed {}
+pub trait Index: Default + sealed::Sealed {}
 
 impl Index for Here {}
 
 impl<T> Index for There<T> where T: Index {}
 
 mod sealed {
-    pub trait Sealed: Sized {}
+    pub trait Sealed {}
 
     impl Sealed for super::Here {}
 
@@ -96,28 +109,97 @@ mod sealed {
 
 /// Type of index which can be incremented,
 /// resulting in an index with can be represented as value of `Self + 1`.
-pub trait Increment: Index {
+pub trait Inc: Index {
     /// Result type of incrementing operation.
-    type Output: Decrement;
+    type Output: Dec;
+
+    /// Increments the index,
+    /// resulting in an index with can be represented as value of `Self + 1`.
+    fn inc(self) -> Self::Output;
 }
 
-impl<T> Increment for T
+impl<T> Inc for T
 where
     T: Index,
 {
     type Output = There<T>;
+
+    fn inc(self) -> Self::Output {
+        Default::default()
+    }
 }
 
 /// Type of index which can be decremented,
 /// resulting in an index with can be represented as value of `Self - 1`.
-pub trait Decrement: Index {
+pub trait Dec: Index {
     /// Result type of decrementing operation.
-    type Output: Increment;
+    type Output: Inc;
+
+    /// Decrements the index,
+    /// resulting in an index with can be represented as value of `Self - 1`.
+    fn dec(self) -> Self::Output;
 }
 
-impl<T> Decrement for There<T>
+impl<T> Dec for There<T>
 where
     T: Index,
 {
     type Output = T;
+
+    fn dec(self) -> Self::Output {
+        Default::default()
+    }
+}
+
+impl<T> Add<T> for Here
+where
+    T: Index,
+{
+    type Output = T;
+
+    fn add(self, rhs: T) -> Self::Output {
+        rhs
+    }
+}
+
+impl<T, U> Add<T> for There<U>
+where
+    U: Add<T>,
+{
+    type Output = There<U::Output>;
+
+    fn add(self, _: T) -> Self::Output {
+        Default::default()
+    }
+}
+
+impl Sub<Here> for Here {
+    type Output = Here;
+
+    fn sub(self, rhs: Here) -> Self::Output {
+        rhs
+    }
+}
+
+impl<T> Sub<Here> for There<T>
+where
+    T: Index,
+{
+    type Output = There<T>;
+
+    fn sub(self, _: Here) -> Self::Output {
+        Default::default()
+    }
+}
+
+impl<T, U> Sub<There<T>> for There<U>
+where
+    T: Index,
+    U: Index + Sub<T>,
+{
+    type Output = U::Output;
+
+    fn sub(self, rhs: There<T>) -> Self::Output {
+        self.dec() - rhs.dec()
+    }
 }
