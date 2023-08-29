@@ -15,7 +15,7 @@ mod sealed {
 
     impl Sealed for super::Here {}
 
-    impl<T> Sealed for super::There<T> where T: Sealed {}
+    impl<T> Sealed for super::There<T> where T: super::Index {}
 }
 
 /// Type of index which can be incremented,
@@ -46,7 +46,7 @@ where
     type Output = There<T>;
 
     fn inc(self) -> Self::Output {
-        Default::default()
+        There::new()
     }
 }
 

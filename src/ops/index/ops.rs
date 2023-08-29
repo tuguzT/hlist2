@@ -17,12 +17,13 @@ where
 
 impl<T, U> Add<T> for There<U>
 where
-    U: Add<T>,
+    U: Idx + Add<T>,
+    U::Output: Idx,
 {
     type Output = There<U::Output>;
 
     fn add(self, _: T) -> Self::Output {
-        Default::default()
+        There::new()
     }
 }
 
@@ -41,7 +42,7 @@ where
     type Output = There<T>;
 
     fn sub(self, _: Here) -> Self::Output {
-        Default::default()
+        There::new()
     }
 }
 
@@ -54,6 +55,64 @@ where
 
     fn sub(self, rhs: There<T>) -> Self::Output {
         self.dec() - rhs.dec()
+    }
+}
+
+impl<T> PartialEq<There<T>> for Here
+where
+    T: Idx,
+{
+    fn eq(&self, _: &There<T>) -> bool {
+        false
+    }
+}
+
+impl<T> PartialEq<Here> for There<T>
+where
+    T: Idx,
+{
+    fn eq(&self, _: &Here) -> bool {
+        false
+    }
+}
+
+impl<T, U> PartialEq<There<T>> for There<U>
+where
+    T: Idx,
+    U: Idx + PartialEq<T>,
+{
+    fn eq(&self, other: &There<T>) -> bool {
+        self.dec() == other.dec()
+    }
+}
+
+impl<T> PartialOrd<There<T>> for Here
+where
+    T: Idx,
+{
+    fn partial_cmp(&self, _: &There<T>) -> Option<core::cmp::Ordering> {
+        Some(core::cmp::Ordering::Less)
+    }
+}
+
+impl<T> PartialOrd<Here> for There<T>
+where
+    T: Idx,
+{
+    fn partial_cmp(&self, _: &Here) -> Option<core::cmp::Ordering> {
+        Some(core::cmp::Ordering::Greater)
+    }
+}
+
+impl<T, U> PartialOrd<There<T>> for There<U>
+where
+    T: Idx,
+    U: Idx + PartialOrd<T>,
+{
+    fn partial_cmp(&self, other: &There<T>) -> Option<core::cmp::Ordering> {
+        let this = self.dec();
+        let other = other.dec();
+        this.partial_cmp(&other)
     }
 }
 
