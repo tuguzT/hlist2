@@ -142,13 +142,13 @@ where
 }
 
 /// Heterogenous list with length (count of elements) known at compile-time.
-pub trait HListLen: HList {
+pub trait Len: HList {
     /// Length (count of elements) of the heterogenous list.
     ///
     /// # Examples
     ///
     /// ```
-    /// use hlist2::{HList, HListLen};
+    /// use hlist2::{HList, Len};
     ///
     /// assert_eq!(<HList![]>::LEN, 0);
     /// assert_eq!(<HList![i32]>::LEN, 1);
@@ -157,13 +157,13 @@ pub trait HListLen: HList {
     const LEN: usize;
 }
 
-impl HListLen for Nil {
+impl Len for Nil {
     const LEN: usize = 0;
 }
 
-impl<Head, Tail> HListLen for Cons<Head, Tail>
+impl<Head, Tail> Len for Cons<Head, Tail>
 where
-    Tail: HListLen,
+    Tail: Len,
 {
     const LEN: usize = 1 + Tail::LEN;
 }
