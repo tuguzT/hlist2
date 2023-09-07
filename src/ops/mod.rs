@@ -14,6 +14,7 @@ pub use self::{
     remove::Remove,
     remove_many::{RemoveMany, RemoveManyIndex},
     reverse::Reverse,
+    shuffle::Shuffle,
     to_ref::ToRef,
     unzip::Unzip,
     zip::Zip,
@@ -32,6 +33,7 @@ mod prepend;
 mod remove;
 mod remove_many;
 mod reverse;
+mod shuffle;
 mod to_ref;
 mod unzip;
 mod zip;
