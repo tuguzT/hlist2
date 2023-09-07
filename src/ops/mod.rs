@@ -12,6 +12,7 @@ pub use self::{
     pop_front::PopFront,
     prepend::Prepend,
     remove::Remove,
+    remove_many::{RemoveMany, RemoveManyIndex},
     reverse::Reverse,
     to_ref::ToRef,
     unzip::Unzip,
@@ -29,6 +30,7 @@ mod pop;
 mod pop_front;
 mod prepend;
 mod remove;
+mod remove_many;
 mod reverse;
 mod to_ref;
 mod unzip;
