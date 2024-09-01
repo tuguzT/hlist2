@@ -26,7 +26,7 @@
 //! Then, implement your trait on [`Cons`] struct with head and tail generic types
 //! where tail type is heterogenous list too (or which implement [`HList`][hlist] trait).
 //!
-//! Examples of these technique can be viewed in [`ops`](crate::ops) module, where
+//! Examples of these technique can be viewed in [`ops`] module, where
 //! all the specific operations for all heterogenous list types are implemented.
 //! For example, to append any value to the end of the list, use [`Append`][append] trait;
 //! to prepend any value to the beginning of the list, use [`Prepend`][prepend] trait, and so on.
