@@ -1,6 +1,6 @@
 use crate::{HList, Nil};
 
-use super::{RemoveMany, RemoveManyIndex};
+use super::{ManyIndex, RemoveMany};
 
 /// Shuffle current heterogenous list, or change order of its elements.
 ///
@@ -9,7 +9,7 @@ use super::{RemoveMany, RemoveManyIndex};
 pub trait Shuffle<T, I>: RemoveMany<T, I, Remainder = Nil>
 where
     T: HList,
-    I: RemoveManyIndex,
+    I: ManyIndex,
 {
     /// Shuffles current heterogenous list, or changes order of its elements.
     ///
@@ -29,7 +29,7 @@ impl<T, L, I> Shuffle<L, I> for T
 where
     L: HList,
     T: RemoveMany<L, I, Remainder = Nil>,
-    I: RemoveManyIndex,
+    I: ManyIndex,
 {
     fn shuffle(self) -> L {
         let (list, _) = self.remove_many();

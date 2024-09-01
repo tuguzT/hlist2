@@ -24,6 +24,7 @@ pub trait Pop: HList {
     /// assert_eq!(list, hlist![1, 2.0]);
     /// assert_eq!(elem, true);
     /// ```
+    #[doc(alias("pop_back"))]
     fn pop(self) -> (Self::Last, Self::Remainder);
 }
 

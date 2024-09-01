@@ -1,42 +1,12 @@
 use crate::{Cons, HList, Nil};
 
-use super::{Index, Remove};
-
-/// Type of index which is used to remove many elements from the heterogenous list.
-///
-/// This trait is sealed and cannot be implemented outside of this crate.
-/// It is implemented only for heterogenous lists where all the elements implement [`Index`] trait.
-pub trait RemoveManyIndex: HList + Default + sealed::Sealed {}
-
-impl RemoveManyIndex for Nil {}
-
-impl<Head, Tail> RemoveManyIndex for Cons<Head, Tail>
-where
-    Head: Index,
-    Tail: RemoveManyIndex,
-{
-}
-
-mod sealed {
-    use crate::{ops::Index, Cons, Nil};
-
-    pub trait Sealed {}
-
-    impl Sealed for Nil {}
-
-    impl<Head, Tail> Sealed for Cons<Head, Tail>
-    where
-        Head: Index,
-        Tail: Sealed,
-    {
-    }
-}
+use super::{Index, ManyIndex, Remove};
 
 /// Move many elements out of the heterogenous list by their types.
 pub trait RemoveMany<T, I>: HList
 where
     T: HList,
-    I: RemoveManyIndex,
+    I: ManyIndex,
 {
     /// Remaining part of the heterogenous list without removed elements.
     type Remainder: HList;
@@ -72,7 +42,7 @@ impl<Head, Tail, OtherHead, OtherTail, IndexHead, IndexTail>
 where
     OtherTail: HList,
     IndexHead: Index,
-    IndexTail: RemoveManyIndex,
+    IndexTail: ManyIndex,
     Self: Remove<OtherHead, IndexHead>,
     <Self as Remove<OtherHead, IndexHead>>::Remainder: RemoveMany<OtherTail, IndexTail>,
 {

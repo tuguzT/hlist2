@@ -6,13 +6,14 @@ pub use self::{
     flatten::Flatten,
     fold::{Fold, FoldFn, Folder, RFold},
     get::Get,
-    index::{Dec, Here, Inc, Index, There},
+    get_many::GetMany,
+    index::{Dec, Here, Inc, Index, ManyIndex, There},
     map::{Map, MapFn, Mapper},
     pop::Pop,
     pop_front::PopFront,
     prepend::Prepend,
     remove::Remove,
-    remove_many::{RemoveMany, RemoveManyIndex},
+    remove_many::RemoveMany,
     reverse::Reverse,
     shuffle::Shuffle,
     to_ref::ToRef,
@@ -25,6 +26,7 @@ mod extend;
 mod flatten;
 mod fold;
 mod get;
+mod get_many;
 mod index;
 mod map;
 mod pop;

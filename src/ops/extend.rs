@@ -22,6 +22,7 @@ pub trait Extend: HList {
     /// assert_eq!(first.extend(second), hlist![1, 2.0, true, "hello world"]);
     /// assert_eq!(second.extend(first), hlist![true, "hello world", 1, 2.0]);
     /// ```
+    #[doc(alias("append_many"))]
     fn extend<T>(self, list: T) -> Self::Output<T>
     where
         T: HList;
