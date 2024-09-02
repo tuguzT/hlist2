@@ -68,19 +68,14 @@
 #![forbid(unsafe_code)]
 #![no_std]
 
+pub use self::{cons::Cons, nil::Nil};
+
 pub mod convert;
 pub mod iter;
 pub mod ops;
 
-/// An empty heterogenous list.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
-pub struct Nil;
-
-/// Heterogenous list with head and tail values, where tail is another heterogenous list.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
-pub struct Cons<Head, Tail>(pub Head, pub Tail)
-where
-    Tail: ?Sized;
+mod cons;
+mod nil;
 
 /// Compile-time heterogenous list.
 ///
@@ -119,11 +114,11 @@ pub trait HList: sealed::Sealed {
 
 impl HList for Nil {
     fn len(&self) -> usize {
-        Self::LEN
+        Nil::len(self)
     }
 
     fn is_empty(&self) -> bool {
-        true
+        Nil::is_empty(self)
     }
 }
 
@@ -158,7 +153,7 @@ pub trait Len: HList {
 }
 
 impl Len for Nil {
-    const LEN: usize = 0;
+    const LEN: usize = Nil::LEN;
 }
 
 impl<Head, Tail> Len for Cons<Head, Tail>
