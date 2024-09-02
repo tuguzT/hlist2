@@ -1,3 +1,5 @@
+use core::iter::FusedIterator;
+
 /// An empty heterogenous list.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Default)]
 pub struct Nil;
@@ -72,3 +74,24 @@ impl AsMut<Nil> for Nil {
         self
     }
 }
+
+impl Iterator for Nil {
+    type Item = Nil;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        None
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = Nil::len(self);
+        (len, Some(len))
+    }
+}
+
+impl ExactSizeIterator for Nil {
+    fn len(&self) -> usize {
+        Nil::len(self)
+    }
+}
+
+impl FusedIterator for Nil {}
